@@ -1,10 +1,10 @@
 ---Temporary Content---
 To be removed once first official version of GetPerms is pushed.
-This plugin does not function yet (as of 2/15/12).
+This plugin does not do anything yet (as of 2/16/12).
 Official jar to be pushed soon.
 ---Temporary Content---
 
-About: GetPerms is a plugin for Minecraft servers running Bukkit. This plugin will gather a list of all permission nodes for every plugin installed on the server.
+About: GetPerms is a plugin for Minecraft servers running Bukkit. This plugin will gather a list of all permission nodes for every plugin installed on the server and output the nodes to a file.
 
 Installation:
   1. Download the plugin (you should have already)
@@ -16,4 +16,4 @@ Usage:
   3. Open 'pnodes.txt'
 
 pnodes.txt:
-  Each separate line has one permission node. All permission nodes are pulled from each plugin installed on the server. GetPerms will not get permission nodes from plugins that are not in the '/plugins' folder.
+  Each line is one separate permission node. Plugins must be in the '/plugins' folder in order for GetPerms to get the permission nodes from the plugin. Permission nodes are listed by plugins, which are in alphabetical order. A permission node's description is available in 'pnodesfull.txt' which is also in '/plugins/GetPerms'.
