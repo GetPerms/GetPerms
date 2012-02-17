@@ -15,6 +15,7 @@ import org.bukkit.plugin.PluginManager;
 
 public class GetPerms extends JavaPlugin {
 
+	private String version = "0.0.1";
 	Logger log = Logger.getLogger("Minecraft");
 	PluginManager pm = Bukkit.getServer().getPluginManager();
 	private Plugin[] pluginlist;
@@ -23,7 +24,7 @@ public class GetPerms extends JavaPlugin {
 	private File file2 = new File("pnodesfull.txt");
 	private PrintWriter pw1;
 	private PrintWriter pw2;
-	
+
 	public void onEnable(){ 
 		try {
 			pw1 = new PrintWriter(new FileWriter(file1));
@@ -31,29 +32,30 @@ public class GetPerms extends JavaPlugin {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		log.info("[GetPerms] GetPerms 0.0.1 loaded successfully");
+		log.info(new StringBuilder().append("[GetPerms] GetPerms ").append(version).append(" loaded").toString());
 		pluginlist = pm.getPlugins();
+		log.info("[GetPerms] Retrieved plugin list!");
+		log.info("[GetPerms] Gathering permission nodes...");
 		for (Plugin p : pluginlist) {
-			log.info(p.getDescription().getName());
+			//DEBUG log.info(p.getDescription().getName());
 			plist = p.getDescription().getPermissions();
+			pw2.println((new StringBuilder()).append("----").append(p.getDescription().getName()).append("----").toString());
 			for (Permission pr : plist) {
-		    	//Write each permission to file
 				pw1.println((new StringBuilder()).append(pr.getName()).toString());
 				pw2.println((new StringBuilder()).append(pr.getName()).append(" - ").append(pr.getDescription()).toString());
 		    }
+			pw2.println("");
 		}
 		pw1.close();
 		pw2.close();
-		log.info("[GetPerms] Retrieved plugin list!");
-		log.info("[GetPerms] Gathering permission nodes...");
 		log.info("[GetPerms] Arranging permission nodes...");
-		//log.info("[GetPerms] Compiled permission nodes into 'pnodes.txt' and");
-		//log.info("[GetPerms] 'pnodesfull.txt' in '/plugins/GetPerms'.");
+		log.info("[GetPerms] Compiled permission nodes into 'pnodes.txt' and");
+		log.info("[GetPerms] 'pnodesfull.txt' in the server root folder.");
 		log.info("[GetPerms] Finished! Stopping...");
 	}
-	 
+
 	public void onDisable(){ 
-		log.info("[GetPerms] GetPerms 0.0.1 unloaded");
+		log.info(new StringBuilder().append("[GetPerms] GetPerms ").append(version).append(" unloaded").toString());
 	}
-	
+
 }
