@@ -15,7 +15,7 @@ import org.bukkit.plugin.PluginManager;
 
 public class GetPerms extends JavaPlugin {
 
-	private String version = "0.0.2";
+	private String version = "0.0.3";
 	Logger log = Logger.getLogger("Minecraft");
 	PluginManager pm = Bukkit.getServer().getPluginManager();
 	private Plugin[] pluginlist;
@@ -32,14 +32,16 @@ public class GetPerms extends JavaPlugin {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		log.info(new StringBuilder().append("[GetPerms] GetPerms ").append(version).append(" loaded").toString());
 		pluginlist = pm.getPlugins();
+		log.info(new StringBuilder().append("[GetPerms] GetPerms ").append(version).append(" loaded").toString());
 		log.info("[GetPerms] Retrieved plugin list!");
 		log.info("[GetPerms] Gathering permission nodes...");
 		for (Plugin p : pluginlist) {
 			//DEBUG log.info(p.getDescription().getName());
 			plist = p.getDescription().getPermissions();
-			pw2.println((new StringBuilder()).append("----").append(p.getDescription().getName()).append("----").toString());
+			if (!plist.isEmpty()) {
+				pw2.println((new StringBuilder()).append("----").append(p.getDescription().getName()).append("----").toString());
+			}
 			for (Permission pr : plist) {
 				pw1.println((new StringBuilder()).append(pr.getName()).toString());
 				if (pr.getDescription() == "") {
@@ -56,7 +58,7 @@ public class GetPerms extends JavaPlugin {
 		log.info("[GetPerms] Arranging permission nodes...");
 		log.info("[GetPerms] Compiled permission nodes into 'pnodes.txt' and");
 		log.info("[GetPerms] 'pnodesfull.txt' in the server root folder.");
-		log.info("[GetPerms] Finished! Stopping...");
+		
 	}
 
 	public void onDisable(){ 

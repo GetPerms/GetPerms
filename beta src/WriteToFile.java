@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.StringBuilder;
 
 public class WriteToFile {
 
+	@Override
 	public void Write(String string, File file) throws IOException {
 		Write(string, "", file);
 	}
