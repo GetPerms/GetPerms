@@ -15,7 +15,7 @@ import org.bukkit.plugin.PluginManager;
 
 public class GetPerms extends JavaPlugin {
 
-	private String version = "0.0.1";
+	private String version = "0.0.2";
 	Logger log = Logger.getLogger("Minecraft");
 	PluginManager pm = Bukkit.getServer().getPluginManager();
 	private Plugin[] pluginlist;
@@ -42,7 +42,12 @@ public class GetPerms extends JavaPlugin {
 			pw2.println((new StringBuilder()).append("----").append(p.getDescription().getName()).append("----").toString());
 			for (Permission pr : plist) {
 				pw1.println((new StringBuilder()).append(pr.getName()).toString());
-				pw2.println((new StringBuilder()).append(pr.getName()).append(" - ").append(pr.getDescription()).toString());
+				if (pr.getDescription() == "") {
+					pw2.println((new StringBuilder()).append(pr.getName()).append(" - ").append("No description given").toString());
+				}
+				else {
+					pw2.println((new StringBuilder()).append(pr.getName()).append(" - ").append(pr.getDescription()).toString());
+				}
 		    }
 			pw2.println("");
 		}
