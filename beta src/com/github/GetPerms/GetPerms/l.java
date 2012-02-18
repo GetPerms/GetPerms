@@ -8,7 +8,6 @@ public class l {
 	Logger mlog = Logger.getLogger("Minecraft");
 	private StringBuilder a;
 
-	@Override
 	public void log(String s)
 	{
 		String b = a.append("[GetPerms] ").append(s).toString();
