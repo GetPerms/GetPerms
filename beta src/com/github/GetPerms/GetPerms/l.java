@@ -3,14 +3,13 @@ package com.github.GetPerms.GetPerms;
 import java.util.logging.Logger;
 import java.lang.StringBuilder;
 
-public class l {
+public final class l {
 
 	Logger mlog = Logger.getLogger("Minecraft");
-	private StringBuilder a;
 
-	public void log(String s)
+	public final void log(String s)
 	{
-		String b = a.append("[GetPerms] ").append(s).toString();
+		String b = (new StringBuilder()).append("[GetPerms] ").append(s).toString();
 		mlog.info(b);
 	}
 }

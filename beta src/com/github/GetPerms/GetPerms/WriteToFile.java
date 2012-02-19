@@ -1,18 +1,32 @@
 package com.github.GetPerms.GetPerms;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.lang.StringBuilder;
+import java.util.List;
 
-public class WriteToFile {
+import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.Plugin;
 
-	public void Write(String string, File file) throws IOException {
-		Write(string, "", file);
-	}
-	
-	public void Write(String name, String desc, File file) throws IOException {
-		PrintWriter pw = new PrintWriter(new FileWriter(file));
-		pw.println((new StringBuilder()).append(name).append(" - ").append(desc).toString());
+public final class WriteToFile {
+
+	private GetPermsB gp;
+	public List<Permission> plist;
+
+	public final void Write(Plugin p) throws IOException {
+		
+		plist = p.getDescription().getPermissions();
+		if (!plist.isEmpty()) {
+			gp.pw2.println((new StringBuilder()).append("----").append(p.getDescription().getName()).append("----").toString());
+		}
+		
+		for (Permission pr : plist) {
+			gp.pw1.println((new StringBuilder()).append(pr.getName()).toString());
+			if (pr.getDescription() == "") {
+				gp.pw2.println((new StringBuilder()).append(pr.getName()).append(" - ").append("No description given").toString());
+			}
+			else {
+				gp.pw2.println((new StringBuilder()).append(pr.getName()).append(" - ").append(pr.getDescription()).toString());
+			}
+	    }
 	}
 }
