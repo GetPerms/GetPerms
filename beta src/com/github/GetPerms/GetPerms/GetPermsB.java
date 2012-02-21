@@ -8,6 +8,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.lang.StringBuilder;
+import java.util.List;
+import java.util.logging.Logger;
+
+import com.github.GetPerms.GetPerms.*;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -38,7 +44,7 @@ public class GetPermsB extends JavaPlugin {
 			e.printStackTrace();
 		}
 		pluginlist = pm.getPlugins();
-		l.log(new StringBuilder().append("GetPerms ").append(version).append(" loaded").toString());
+		l.log(new StringBuilder().append("GetPerms ").append(version).append(" enabled!").toString());
 		checkForUpdates();
 		l.log("Retrieved plugin list!");
 		l.log("Gathering permission nodes...");
