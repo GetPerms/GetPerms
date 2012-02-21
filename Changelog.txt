@@ -1,10 +1,18 @@
 Changelog:
 
-v0.0.3
+v0.0.4 (2/21/12)
+Major code change
+Split code into multiple class files/methods
+Added auto-update feature
+Added config file (empty now)
+Just wanted to get this out now
+0.0.5 Coming out soon!
+
+v0.0.3 (2/18/12)
 Minor change for unnecessary newlines being generated
 
-v0.0.2
+v0.0.2 (2/17/12)
 Minor change to console output
 
-v0.0.1
+v0.0.1 (2/16/11)
 Initial release
