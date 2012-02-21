@@ -18,7 +18,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 
-@SuppressWarnings("unused")
 public class GetPerms extends JavaPlugin {
 
 	private String version;
@@ -42,13 +41,13 @@ public class GetPerms extends JavaPlugin {
 			try {
 			getDataFolder().mkdir();
 			new File(getDataFolder(), "config.yml").createNewFile();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println(PN+"Error occurred while creating config.yml!");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Error occurred while creating config.yml!");
+				getServer().getPluginManager().disablePlugin(this);
+				return;
+			}
 		}
-	}
 		try {
 			pw1 = new PrintWriter(new FileWriter(file1));
 			pw2 = new PrintWriter(new FileWriter(file2));
@@ -56,10 +55,10 @@ public class GetPerms extends JavaPlugin {
 			e.printStackTrace();
 		}
 		pluginlist = pm.getPlugins();
-		log.info(new StringBuilder().append(PN+"GetPerms ").append(version).append(" loaded").toString());
-		log.info(PN+"GetPerms is the work of Smiley43210, with the help of Tahkeh, wwsean08, and desmin88.");
-		log.info(PN+"Retrieved plugin list!");
-		log.info(PN+"Gathering permission nodes...");
+		log.info(new StringBuilder().append("GetPerms ").append(version).append(" loaded").toString());
+		log.info("GetPerms is the work of Smiley43210, with the help of Tahkeh, wwsean08, and desmin88.");
+		log.info("Retrieved plugin list!");
+		log.info("Gathering permission nodes...");
 		for (Plugin p : pluginlist) {
 			//DEBUG log.info(p.getDescription().getName());
 			plist = p.getDescription().getPermissions();
@@ -79,14 +78,14 @@ public class GetPerms extends JavaPlugin {
 		}
 		pw1.close();
 		pw2.close();
-		log.info(PN+"Arranging permission nodes...");
-		log.info(PN+"Compiled permission nodes into 'pnodes.txt' and");
-		log.info(PN+"'pnodesfull.txt' in the server root folder.");
+		log.info("Arranging permission nodes...");
+		log.info("Compiled permission nodes into 'pnodes.txt' and");
+		log.info("'pnodesfull.txt' in the server root folder.");
 
 	}
 
 	public void onDisable(){ 
-		log.info(new StringBuilder().append(PN+"GetPerms ").append(version).append(" unloaded").toString());
+		log.info(new StringBuilder().append("GetPerms ").append(version).append(" unloaded").toString());
 	}
 
 }

@@ -9,21 +9,17 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.lang.StringBuilder;
-import java.util.List;
-import java.util.logging.Logger;
-
-import com.github.GetPerms.GetPerms.*;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class GetPermsB extends JavaPlugin {
 
-	public final String version = "0.0.3";
-	l l;
+	public String gpversion;
 	WriteToFile WTF;
 	PluginManager pm = Bukkit.getServer().getPluginManager();
 	public Plugin[] pluginlist;
@@ -31,12 +27,14 @@ public class GetPermsB extends JavaPlugin {
 	private File file2 = new File("pnodesfull.txt");
 	public PrintWriter pw1;
 	public PrintWriter pw2;
-	private FileConfiguration cfg;
+	public static PluginDescriptionFile pdf;
+	public static Configuration cfg;
 
 	@Override
 	public void onEnable() { 
-		//cfgDef();
-		//createCfg();
+		pdf = this.getDescription();
+		gpversion = pdf.getVersion();
+		gpcreateCfg();
 		try {
 			pw1 = new PrintWriter(new FileWriter(file1));
 			pw2 = new PrintWriter(new FileWriter(file2));
@@ -44,10 +42,10 @@ public class GetPermsB extends JavaPlugin {
 			e.printStackTrace();
 		}
 		pluginlist = pm.getPlugins();
-		l.log(new StringBuilder().append("GetPerms ").append(version).append(" enabled!").toString());
-		checkForUpdates();
-		l.log("Retrieved plugin list!");
-		l.log("Gathering permission nodes...");
+		getLogger().info(new StringBuilder().append("GetPerms ").append(gpversion).append(" enabled!").toString());
+		gpCheckForUpdates();
+		getLogger().info("Retrieved plugin list!");
+		getLogger().info("Gathering permission nodes...");
 		for (Plugin p : pluginlist) {
 		    try {
 				WTF.Write(p);
@@ -58,22 +56,21 @@ public class GetPermsB extends JavaPlugin {
 		    	pw2.println("");
 		    }
 		}
-		l.log("Compiled permission nodes into 'pnodes.txt' and");
-		l.log("'pnodesfull.txt' in the server root folder.");
+		getLogger().info("Compiled permission nodes into 'pnodes.txt' and");
+		getLogger().info("'pnodesfull.txt' in the server root folder.");
 	}
 	@Override
 	public void onDisable() { 
-		l.log(new StringBuilder().append("GetPerms ").append(version).append(" unloaded").toString());
+		getLogger().info(new StringBuilder().append("GetPerms ").append(gpversion).append(" unloaded").toString());
 	}
-
-	private final void checkForUpdates() {
-		String check = "https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt";
+	private final void gpCheckForUpdates() {
+		String check = "https://raw.github.com/GetPerms/GetPerms/master/ver";
 		try {
 			URL client = new URL(check);
 			BufferedReader buf = new BufferedReader(new InputStreamReader(client.openStream()));
 			String line = buf.readLine();
-			if(newer(version, line))
-				l.log("Newer GetPerms version" + line + " is available for download, you can get it at https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar or http://dev.bukkit.org/server-mods/getperms/files");
+			if(gpnewer(gpversion, line))
+				getLogger().info("Newer GetPerms version" + line + " is available for download, you can get it at https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar or http://dev.bukkit.org/server-mods/getperms/files");
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -81,7 +78,7 @@ public class GetPermsB extends JavaPlugin {
 		}
 	}
 
-	private final boolean newer(String current, String check) {
+	private final boolean gpnewer(String current, String check) {
 		boolean result = false;
 		String[] currentVersion = current.split("\\.");
 		String[] checkVersion = check.split("\\.");
@@ -108,16 +105,11 @@ public class GetPermsB extends JavaPlugin {
 		return result;
 	}
 	
-	private final void createCfg() {
+	private final void gpcreateCfg() {
 		cfg = this.getConfig();
 		cfg.options().copyDefaults(true);
 		this.saveConfig();
 		//just getting ready for when the bleeding edge stuff comes out
-	}
-
-	private final void cfgDef() {
-		cfg.addDefault("autoGenerate", true);
-		cfg.addDefault("debugOutput", false);
 	}
 
 }
