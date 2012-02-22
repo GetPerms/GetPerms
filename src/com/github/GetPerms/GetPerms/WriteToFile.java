@@ -1,8 +1,8 @@
 package com.github.GetPerms.GetPerms;
 
 import java.io.IOException;
-import java.lang.StringBuilder;
 import java.util.List;
+import java.lang.StringBuilder;
 
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
@@ -14,7 +14,7 @@ public final class WriteToFile {
 	
 	public WriteToFile(GetPerms gp)
 	{
-	this.gp = gp;
+		this.gp = gp;
 	}
 
 	public final void Write(Plugin p) throws IOException {

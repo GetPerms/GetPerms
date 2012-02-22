@@ -8,3 +8,9 @@ autoGen: true
 
 #Weather or not to check for updates
 autoUpdate: true
+
+#Should it automatically download the newest GetPerms.jar?
+autoDownload: false
+
+#Debug if needed
+debugMode: false

@@ -1,9 +1,13 @@
 Changelog:
 
+v0.0.6 (2/21/12)
+Control debug mode via config
+Control auto-download via config
+
 v0.0.5 (2/21/12)
 Config is used
-Control autoupdate via config
-Control autogenerate via config
+Control auto-update via config
+Control auto-generate via config
 
 v0.0.4 (2/21/12)
 Major code change
