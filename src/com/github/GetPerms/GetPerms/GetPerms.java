@@ -30,10 +30,10 @@ public class GetPerms extends JavaPlugin {
 	public Plugin[] pluginlist;
 	private File file1 = new File("pnodes.txt");
 	private File file2 = new File("pnodesfull.txt");
-	private File rm = new File("/plugins/GetPerms/ReadMe.txt");
-	private File cl = new File("/plugins/GetPerms/Changelog.txt");
+	private File rm = new File("plugins/GetPerms/ReadMe.txt");
+	private File cl = new File("plugins/GetPerms/Changelog.txt");
 	private File uf = new File("update");
-	private File updt = new File("/update/GetPerms.jar");
+	private File updt = new File("update/GetPerms.jar");
 	public PrintWriter pw1;
 	public PrintWriter pw2;
 	public static PluginDescriptionFile pdf;
