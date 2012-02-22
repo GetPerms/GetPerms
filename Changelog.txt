@@ -1,6 +1,14 @@
 Changelog:
 
+v0.0.7 (2/21/12)
+Added disable on finish in config
+Control disable on finish in config
+Added a class to create the popular comments in the config.yml
+Minor logger message changes
+
 v0.0.6 (2/21/12)
+Added debug mode in config
+Added auto-download in config
 Control debug mode via config
 Control auto-download via config
 

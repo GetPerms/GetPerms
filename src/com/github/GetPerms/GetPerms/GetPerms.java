@@ -25,13 +25,14 @@ public class GetPerms extends JavaPlugin {
 
 	public String gpversion;
 	WriteToFile WTF;
+	ConfigHandler ConfHandler;
 	PluginManager pm = Bukkit.getServer().getPluginManager();
 	public Plugin[] pluginlist;
 	private File file1 = new File("pnodes.txt");
 	private File file2 = new File("pnodesfull.txt");
 	private File rm = new File("/plugins/GetPerms/ReadMe.txt");
 	private File cl = new File("/plugins/GetPerms/Changelog.txt");
-	private File uf = new File("/update");
+	private File uf = new File("update");
 	private File updt = new File("/update/GetPerms.jar");
 	public PrintWriter pw1;
 	public PrintWriter pw2;
@@ -40,6 +41,7 @@ public class GetPerms extends JavaPlugin {
 
 	@Override
 	public void onEnable() { 
+		WTF = new WriteToFile(this);
 		cfg = this.getConfig();
 		if (cfg.getBoolean("firstRun")) {
 			cfg.set("firstRun", false);
@@ -56,7 +58,6 @@ public class GetPerms extends JavaPlugin {
 				getLogger().warning("Error downloading readme and changelog!");
 			}
 		}
-		WTF = new WriteToFile(this);
 		pdf = this.getDescription();
 		gpversion = pdf.getVersion();
 		gpCreateCfg();
@@ -83,7 +84,7 @@ public class GetPerms extends JavaPlugin {
 					WTF.Write(p);
 				} catch (IOException e) {
 					PST(e);
-					getLogger().warning("Error retrieving plugin list");
+					getLogger().warning("Error retrieving plugin list!");
 				}
 				if (!WTF.plist.isEmpty()) {
 					pw2.println("");
@@ -93,10 +94,15 @@ public class GetPerms extends JavaPlugin {
 			pw2.close();
 			getLogger().info("Compiled permission nodes into 'pnodes.txt' and");
 			getLogger().info("'pnodesfull.txt' in the server root folder.");
+			this.saveConfig();
+			if (cfg.getBoolean("disableOnFinish", true))
+				getServer().getPluginManager().disablePlugin(this);
 		}
 	}
 	@Override
 	public void onDisable() { 
+		ConfHandler = new ConfigHandler(this);
+		ConfHandler.change();
 		getLogger().info(new StringBuilder().append("GetPerms ").append(gpversion).append(" unloaded").toString());
 	}
 
@@ -107,31 +113,33 @@ public class GetPerms extends JavaPlugin {
 			BufferedReader buf = new BufferedReader(new InputStreamReader(client.openStream()));
 			String line = buf.readLine();
 			if(gpnewer(gpversion, line))
-				getLogger().info("Newer GetPerms version" + line + " is available for download, you can get it at https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar or http://dev.bukkit.org/server-mods/getperms/files");
+				getLogger().info("Newest GetPerms version" + line + " is available for download, you can get it at https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar or http://dev.bukkit.org/server-mods/getperms/files");
 				if (cfg.getBoolean("autoDownload", true)) {
 					if (!uf.exists()) {
 						uf.mkdir();
 					}
 					dlFile("https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar", updt);
-					getLogger().info("Newest version of GetPerms is located in root_server_directory/");
-					getLogger().info("update/GetPerms.jar'.");
+					getLogger().info("Newest version of GetPerms is located in");
+					getLogger().info("'server_root_dir/update/GetPerms.jar'.");
 				}
 			else
 				getLogger().info("You have the latest version!");
 		} catch (MalformedURLException e) {
 			PST(e);
+			getLogger().warning("Unable to check for updates.");
 		} catch (IOException e) {
 			PST(e);
+			getLogger().warning("Unable to check for updates.");
 		}
 	}
 
-	private final void PST(IOException e) {
+	public final void PST(IOException e) {
 		if (cfg.getBoolean("debugMode", true)) { 
 			e.printStackTrace();
 		}
 	}
 	
-	private final void PST(MalformedURLException e) {
+	public final void PST(MalformedURLException e) {
 		if (cfg.getBoolean("debugMode", true)) { 
 			e.printStackTrace();
 		}
@@ -171,7 +179,7 @@ public class GetPerms extends JavaPlugin {
 		//Getting ready for option changes
 	}
 
-	private static void dlFile(String url, File file) throws MalformedURLException, IOException {		 
+	public static void dlFile(String url, File file) throws MalformedURLException, IOException {		 
 		BufferedInputStream in = new BufferedInputStream(new 
 		java.net.URL(url).openStream());
 		FileOutputStream fos = new FileOutputStream(file);

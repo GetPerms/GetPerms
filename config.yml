@@ -1,16 +1,25 @@
 #GetPerms config
 
 #Is it the first run?
+info_firstRun: "Do not change. May still be true after you run it, but just leave it. Leave it. Leave it. Don't change it. Let it be."
 firstRun: true
 
 #Weather or not to automatically generate the permissions files on startup
+info_autoGen: "Weather or not to automatically generate the permissions files on startup"
 autoGen: true
 
 #Weather or not to check for updates
+info_autoUpdate: "Weather or not to check for updates"
 autoUpdate: true
 
 #Should it automatically download the newest GetPerms.jar?
+info_autoDownload: "Should it automatically download the newest GetPerms.jar?"
 autoDownload: false
 
+#Disable the plugin once it finishes?
+info_disableOnFinish: "Disable the plugin once it finishes?"
+disableOnFinish: false
+
 #Debug if needed
+info_debugMode: "Debug mode if needed for bugs/errors"
 debugMode: false
