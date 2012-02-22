@@ -38,24 +38,48 @@ public class GetPerms extends JavaPlugin {
 	public PrintWriter pw2;
 	public static PluginDescriptionFile pdf;
 	public static Configuration cfg;
+	private boolean dlstate = true;
 
 	@Override
 	public void onEnable() { 
 		WTF = new WriteToFile(this);
 		cfg = this.getConfig();
-		if (cfg.getBoolean("firstRun")) {
-			cfg.set("firstRun", false);
+		if (!cfg.getString("v").equalsIgnoreCase(gpversion)) {
 			try {
+				getLogger().info("Downloading changelog and readme...");
 				dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
+				getLogger().info("Downloaded Changelog.txt to 'plugins/GetPerms/Changelog.txt'");
 				dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
+				getLogger().info("Downloaded ReadMe.txt to 'plugins/GetPerms/ReadMe.txt'");
+				dlstate = false;
+				cfg.set("v", gpversion);
 			} catch (MalformedURLException e) {
-				cfg.set("firstRun", true);
 				PST(e);
 				getLogger().warning("Error downloading readme and changelog!");
 			} catch (IOException e) {
-				cfg.set("firstRun", true);
 				PST(e);
 				getLogger().warning("Error downloading readme and changelog!");
+			}
+		}
+
+		if (dlstate){
+			if (cfg.getBoolean("firstRun")) {
+				cfg.set("firstRun", false);
+				try {
+					getLogger().info("Downloading changelog and readme...");
+					dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
+					getLogger().info("Downloaded Changelog.txt to 'plugins/GetPerms/Changelog.txt'");
+					dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
+					getLogger().info("Downloaded ReadMe.txt to 'plugins/GetPerms/ReadMe.txt'");
+				} catch (MalformedURLException e) {
+					cfg.set("firstRun", true);
+					PST(e);
+					getLogger().warning("Error downloading readme and changelog!");
+				} catch (IOException e) {
+					cfg.set("firstRun", true);
+					PST(e);
+					getLogger().warning("Error downloading readme and changelog!");
+				}
 			}
 		}
 		pdf = this.getDescription();
