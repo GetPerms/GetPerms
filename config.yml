@@ -1,6 +1,10 @@
-//Not functional
-//Not functional
-//Weather or not to automatically generate the permissions files on startup
-autoGen: false
-//Not functional
-//Not functional
+#GetPerms config
+
+#Is it the first run?
+firstRun: true
+
+#Weather or not to automatically generate the permissions files on startup
+autoGen: true
+
+#Weather or not to check for updates
+autoUpdate: true

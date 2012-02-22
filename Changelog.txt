@@ -1,5 +1,10 @@
 Changelog:
 
+v0.0.5 (2/21/12)
+Config is used
+Control autoupdate via config
+Control autogenerate via config
+
 v0.0.4 (2/21/12)
 Major code change
 Split code into multiple class files/methods

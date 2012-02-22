@@ -1,14 +1,18 @@
 package com.github.GetPerms.GetPerms;
 
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.StringBuilder;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.lang.StringBuilder;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
@@ -25,6 +29,8 @@ public class GetPerms extends JavaPlugin {
 	public Plugin[] pluginlist;
 	private File file1 = new File("pnodes.txt");
 	private File file2 = new File("pnodesfull.txt");
+	private File rm = new File("/plugins/GetPerms/ReadMe.txt");
+	private File cl = new File("/plugins/GetPerms/Changelog.txt");
 	public PrintWriter pw1;
 	public PrintWriter pw2;
 	public static PluginDescriptionFile pdf;
@@ -32,6 +38,22 @@ public class GetPerms extends JavaPlugin {
 
 	@Override
 	public void onEnable() { 
+		cfg = this.getConfig();
+		if (cfg.getBoolean("firstRun")) {
+			cfg.set("firstRun", false);
+			try {
+				dlMisc("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
+				dlMisc("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
+			} catch (MalformedURLException e) {
+				cfg.set("firstRun", true);
+				e.printStackTrace();
+				getLogger().warning("Error getting readme and changelog!");
+			} catch (IOException e) {
+				cfg.set("firstRun", true);
+				e.printStackTrace();
+				getLogger().warning("Error getting readme and changelog!");
+			}
+		}
 		WTF = new WriteToFile(this);
 		pdf = this.getDescription();
 		gpversion = pdf.getVersion();
@@ -45,24 +67,30 @@ public class GetPerms extends JavaPlugin {
 		}
 		pluginlist = pm.getPlugins();
 		getLogger().info(new StringBuilder().append("GetPerms ").append(gpversion).append(" enabled!").toString());
-		getLogger().info("GetPerms is the work of Smiley43210, with the help of Tahkeh, wwsean08, and desmin88.");
-		gpCheckForUpdates();
-		getLogger().info("Retrieved plugin list!");
-		getLogger().info("Retrieving permission nodes...");
-		for (Plugin p : pluginlist) {
-		    try {
-				WTF.Write(p);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		    if (!WTF.plist.isEmpty()) {
-		    	pw2.println("");
-		    }
+		getLogger().info("GetPerms is the work of Smiley43210, with the help of");
+		getLogger().info("Tahkeh, wwsean08, desmin88, and others. Thanks!");
+		if (cfg.getBoolean("autoUpdate", true)) {
+			getLogger().info("Checking for updates...");
+			gpCheckForUpdates();
 		}
-		pw1.close();
-		pw2.close();
-		getLogger().info("Compiled permission nodes into 'pnodes.txt' and");
-		getLogger().info("'pnodesfull.txt' in the server root folder.");
+		if (cfg.getBoolean("autoGen", true)) {
+			getLogger().info("Retrieved plugin list!");
+			getLogger().info("Retrieving permission nodes...");
+			for (Plugin p : pluginlist) {
+				try {
+					WTF.Write(p);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if (!WTF.plist.isEmpty()) {
+					pw2.println("");
+				}
+			}
+			pw1.close();
+			pw2.close();
+			getLogger().info("Compiled permission nodes into 'pnodes.txt' and");
+			getLogger().info("'pnodesfull.txt' in the server root folder.");
+		}
 	}
 	@Override
 	public void onDisable() { 
@@ -76,6 +104,8 @@ public class GetPerms extends JavaPlugin {
 			String line = buf.readLine();
 			if(gpnewer(gpversion, line))
 				getLogger().info("Newer GetPerms version" + line + " is available for download, you can get it at https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar or http://dev.bukkit.org/server-mods/getperms/files");
+			else
+				getLogger().info("You have the latest version!");
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -109,14 +139,29 @@ public class GetPerms extends JavaPlugin {
 			result = true;
 		return result;
 	}
-	
+
 	private final void gpCreateCfg() {
 		cfg = this.getConfig();
 		cfg.options().copyDefaults(true);
 		this.saveConfig();
 		//just getting ready for when the bleeding edge stuff comes out
 	}
-	
+
+	private static void dlMisc(String url, File file) throws MalformedURLException, IOException {		 
+		BufferedInputStream in = new BufferedInputStream(new 
+		java.net.URL(url).openStream());
+		FileOutputStream fos = new FileOutputStream(file);
+		BufferedOutputStream bout = new BufferedOutputStream(fos,1024);
+		byte[] data = new byte[1024];
+		int x=0;
+		while((x=in.read(data,0,1024))>=0)
+		{
+			bout.write(data,0,x);
+		}
+		bout.close();
+		in.close();
+	}
+
 	@SuppressWarnings("unused")
 	private final void gpCreateMisc() {
 		if (!new File(getDataFolder(), "plugins.yml").exists()) {
