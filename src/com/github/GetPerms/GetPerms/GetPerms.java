@@ -5,6 +5,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class GetPerms extends JavaPlugin {
 
 	public String gpversion;
 	WriteToFile WTF;
-	ConfigHandler ConfHandler;
+	ConfigHandler ConfHandler = new ConfigHandler(this);
 	PluginManager pm = Bukkit.getServer().getPluginManager();
 	public Plugin[] pluginlist;
 	private File file1 = new File("pnodes.txt");
@@ -39,12 +40,15 @@ public class GetPerms extends JavaPlugin {
 	public static PluginDescriptionFile pdf;
 	public static Configuration cfg;
 	private boolean dlstate = true;
+	long timestamp = System.currentTimeMillis()/1000;
 
 	@Override
 	public void onEnable() { 
 		WTF = new WriteToFile(this);
 		cfg = this.getConfig();
-		if (!cfg.getString("v").equalsIgnoreCase(gpversion)) {
+		gpCreateCfg();
+		ConfHandler.restore();
+		if (!cfg.getString("cfgV").equalsIgnoreCase(gpversion)) {
 			try {
 				getLogger().info("Downloading changelog and readme...");
 				dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
@@ -54,11 +58,24 @@ public class GetPerms extends JavaPlugin {
 				dlstate = false;
 				cfg.set("v", gpversion);
 			} catch (MalformedURLException e) {
+				cfg.set("firstRun", true);
 				PST(e);
 				getLogger().warning("Error downloading readme and changelog!");
+				dlstate = false;
+			} catch (FileNotFoundException e) {
+				cfg.set("firstRun", true);
+				PST(e);
+				getLogger().warning("Error downloading readme and changelog!");
+				getLogger().info("The readme is available at");
+				getLogger().info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
+				getLogger().info("and the changelog is available at");
+				getLogger().info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
+				dlstate = false;
 			} catch (IOException e) {
+				cfg.set("firstRun", true);
 				PST(e);
 				getLogger().warning("Error downloading readme and changelog!");
+				dlstate = false;
 			}
 		}
 
@@ -71,10 +88,19 @@ public class GetPerms extends JavaPlugin {
 					getLogger().info("Downloaded Changelog.txt to 'plugins/GetPerms/Changelog.txt'");
 					dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
 					getLogger().info("Downloaded ReadMe.txt to 'plugins/GetPerms/ReadMe.txt'");
+					dlstate = false;
 				} catch (MalformedURLException e) {
 					cfg.set("firstRun", true);
 					PST(e);
 					getLogger().warning("Error downloading readme and changelog!");
+				} catch (FileNotFoundException e) {
+					cfg.set("firstRun", true);
+					PST(e);
+					getLogger().warning("Error downloading readme and changelog!");
+					getLogger().info("The readme is available at");
+					getLogger().info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
+					getLogger().info("and the changelog is available at");
+					getLogger().info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
 				} catch (IOException e) {
 					cfg.set("firstRun", true);
 					PST(e);
@@ -84,7 +110,6 @@ public class GetPerms extends JavaPlugin {
 		}
 		pdf = this.getDescription();
 		gpversion = pdf.getVersion();
-		gpCreateCfg();
 		//gpCreateMisc();
 		try {
 			pw1 = new PrintWriter(new FileWriter(file1));
@@ -125,8 +150,7 @@ public class GetPerms extends JavaPlugin {
 	}
 	@Override
 	public void onDisable() { 
-		ConfHandler = new ConfigHandler(this);
-		ConfHandler.change();
+		ConfHandler.addComments();
 		getLogger().info(new StringBuilder().append("GetPerms ").append(gpversion).append(" unloaded").toString());
 	}
 
@@ -164,6 +188,12 @@ public class GetPerms extends JavaPlugin {
 	}
 	
 	public final void PST(MalformedURLException e) {
+		if (cfg.getBoolean("debugMode", true)) { 
+			e.printStackTrace();
+		}
+	}
+
+	public final void PST(FileNotFoundException e) {
 		if (cfg.getBoolean("debugMode", true)) { 
 			e.printStackTrace();
 		}

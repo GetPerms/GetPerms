@@ -19,13 +19,14 @@ public class ConfigHandler {
 	private boolean autoDownload;
 	private boolean debugMode;
 	private boolean disableOnFinish;
+	private String cfgV;
 
 	public ConfigHandler(GetPerms gp)
 	{
 		this.gp = gp;
 	}
 
-	public final void change() {
+	public final void addComments() {
 		cfg = gp.getConfig();
 
 		try {
@@ -41,13 +42,18 @@ public class ConfigHandler {
 		autoDownload = cfg.getBoolean("autoDownload");
 		debugMode = cfg.getBoolean("debugMode");
 		disableOnFinish = cfg.getBoolean("disableOnFinish");
+		cfgV = cfg.getString("cfgV");
 
 		pw.println("#GetPerms config file");
 		pw.println("");
+		pw.println("#Config version. Do not change. DO NOT CHANGE! Changing");
+		pw.println("#may cause undesirable results!");
+		pw.println("cfgV: \""+cfgV+"\"");
+		pw.println("");
 		pw.println("#Is it the first run?");
-		pw.println("#Do not change. It may still be true after you run it,");
-		pw.println("# but just leave it. It is supposed to do that Leave it.");
-		pw.println("#Leave it. Don't change it. Let it be.");
+		pw.println("#DO NOT CHANGE! It may still be true after you run it,");
+		pw.println("#but just leave it. It is supposed to do that. LEAVE IT!");
+		pw.println("#Leave it alone. Don't change it. Let it be.");
 		pw.println("firstRun: "+firstRun);
 		pw.println("");
 		pw.println("#Weather or not to automatically generate the permissions files on startup");
@@ -63,6 +69,34 @@ public class ConfigHandler {
 		pw.println("disableOnFinish: "+disableOnFinish);
 		pw.println("");
 		pw.println("#Debug if needed");
+		pw.println("debugMode: "+debugMode);
+
+		pw.close();
+	}
+
+	public final void restore() {
+		cfg = gp.getConfig();
+		try {
+			pw = new PrintWriter(new FileWriter(cfgf));
+		} catch (IOException e) {
+			gp.PST(e);
+			gp.getLogger().warning("Error adding comments to config.yml!");
+		}
+
+		firstRun = cfg.getBoolean("firstRun");
+		autoGen = cfg.getBoolean("autoGen");
+		autoUpdate = cfg.getBoolean("autoUpdate");
+		autoDownload = cfg.getBoolean("autoDownload");
+		debugMode = cfg.getBoolean("debugMode");
+		disableOnFinish = cfg.getBoolean("disableOnFinish");
+		cfgV = gp.gpversion;
+
+		pw.println("cfgV: \""+cfgV+"\"");
+		pw.println("firstRun: "+firstRun);
+		pw.println("autoGen: "+autoGen);
+		pw.println("autoUpdate: "+autoUpdate);
+		pw.println("autoDownload: "+autoDownload);
+		pw.println("disableOnFinish: "+disableOnFinish);
 		pw.println("debugMode: "+debugMode);
 
 		pw.close();
