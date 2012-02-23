@@ -34,6 +34,7 @@ public class GetPerms extends JavaPlugin {
 	private File rm = new File("plugins/GetPerms/ReadMe.txt");
 	private File cl = new File("plugins/GetPerms/Changelog.txt");
 	private File uf = new File("update");
+	private File gpdf = new File("plugins/GetPerms");
 	private File updt = new File("update/GetPerms.jar");
 	public PrintWriter pw1;
 	public PrintWriter pw2;
@@ -50,6 +51,9 @@ public class GetPerms extends JavaPlugin {
 		ConfHandler.restore();
 		if (!cfg.getString("cfgV").equalsIgnoreCase(gpversion)) {
 			try {
+				if (!gpdf.exists()) {
+					gpdf.mkdir();
+				}
 				getLogger().info("Downloading changelog and readme...");
 				dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
 				getLogger().info("Downloaded Changelog.txt to 'plugins/GetPerms/Changelog.txt'");
@@ -160,16 +164,21 @@ public class GetPerms extends JavaPlugin {
 			URL client = new URL(check);
 			BufferedReader buf = new BufferedReader(new InputStreamReader(client.openStream()));
 			String line = buf.readLine();
-			if(gpnewer(gpversion, line))
-				getLogger().info("Newest GetPerms version" + line + " is available for download, you can get it at https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar or http://dev.bukkit.org/server-mods/getperms/files");
+			if (gpnewer(gpversion, line)) {
+				getLogger().info("Newest GetPerms version" + line + " is available.");
 				if (cfg.getBoolean("autoDownload", true)) {
 					if (!uf.exists()) {
 						uf.mkdir();
 					}
+					getLogger().info("Downloading latest release...");
 					dlFile("https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar", updt);
 					getLogger().info("Newest version of GetPerms is located in");
 					getLogger().info("'server_root_dir/update/GetPerms.jar'.");
 				}
+				else {
+					getLogger().info("Newest GetPerms version" + line + " is available for download, you can get it at https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar or http://dev.bukkit.org/server-mods/getperms/files");
+				}
+			}
 			else
 				getLogger().info("You have the latest version!");
 		} catch (MalformedURLException e) {
