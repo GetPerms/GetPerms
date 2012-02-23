@@ -51,6 +51,7 @@ public class GetPerms extends JavaPlugin {
 		ConfHandler.restore();
 		if (!cfg.getString("cfgV").equalsIgnoreCase(gpversion)) {
 			try {
+				cfg.set("v", gpversion);
 				if (!gpdf.exists()) {
 					gpdf.mkdir();
 				}
@@ -60,7 +61,6 @@ public class GetPerms extends JavaPlugin {
 				dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
 				getLogger().info("Downloaded ReadMe.txt to 'plugins/GetPerms/ReadMe.txt'");
 				dlstate = false;
-				cfg.set("v", gpversion);
 			} catch (MalformedURLException e) {
 				cfg.set("firstRun", true);
 				PST(e);
