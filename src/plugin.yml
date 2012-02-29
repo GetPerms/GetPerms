@@ -1,0 +1,21 @@
+name: GetPerms
+main: com.github.GetPerms.GetPerms.GetPerms
+version: 1.0.0
+commands:
+  getpermsregen:
+    description: Regenerates the files listing the permission nodes.
+    usage: /<command>
+  gpregen:
+    description: Regenerates the files listing the permission nodes.
+    usage: /<command>
+  getperms:
+    description: Regenerates the files listing the permission nodes.
+    usage: /<command> <regen>
+  gp:
+    description: Regenerates the files listing the permission nodes.
+    usage: /<command> <regen>
+permissions:
+  getperms.*:
+    description: Parent permission
+  getperms.regen:
+    description: Allows player to regenerate permission node files.
