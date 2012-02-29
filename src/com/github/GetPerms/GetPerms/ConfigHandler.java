@@ -66,9 +66,12 @@ public class ConfigHandler {
 		pw.println("autoDownload: "+autoDownload);
 		pw.println("");
 		pw.println("#Disable the plugin once it finishes?");
+		pw.println("#Please note that setting this to true will disable");
+		pw.println("#the commands to regenerate the permissions files!");
+		pw.println("#Should not be true if autoGen is false.");
 		pw.println("disableOnFinish: "+disableOnFinish);
 		pw.println("");
-		pw.println("#Debug if needed");
+		pw.println("#Debug if needed for errors/bugs/info.");
 		pw.println("debugMode: "+debugMode);
 
 		pw.close();

@@ -1,5 +1,11 @@
 Changelog:
 
+v1.0.0 (2/28/12)
+Major release
+Added command to regenerate the permissions files, or generate it if it doesn't exist.
+Useful if you set autoGen to false.
+PermissionsEx support for the command (also supports whatever PEX supports)
+
 v0.0.7 (2/21/12)
 Added disable on finish in config
 Control disable on finish in config

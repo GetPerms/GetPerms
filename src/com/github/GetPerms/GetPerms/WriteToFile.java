@@ -1,6 +1,9 @@
 package com.github.GetPerms.GetPerms;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.lang.StringBuilder;
 
@@ -11,13 +14,15 @@ public final class WriteToFile {
 
 	private GetPerms gp;
 	public List<Permission> plist;
+	private File file = new File("pluginlist.txt");
+	private PrintWriter pw;
 	
 	public WriteToFile(GetPerms gp)
 	{
 		this.gp = gp;
 	}
 
-	public final void Write(Plugin p) throws IOException {
+	public final void WritePNodes(Plugin p) throws IOException {
 		
 		plist = p.getDescription().getPermissions();
 		if (!plist.isEmpty()) {
@@ -34,4 +39,13 @@ public final class WriteToFile {
 			}
 	    }
 	}
+
+	public final void WritePluginList() throws IOException {
+		pw = new PrintWriter(new FileWriter(file));
+		for (Plugin p : gp.pluginlist) {
+			pw.println(p.getDescription().getName());
+		}
+		pw.close();
+	}
+
 }
