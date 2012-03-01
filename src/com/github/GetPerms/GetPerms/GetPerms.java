@@ -178,8 +178,8 @@ public class GetPerms extends JavaPlugin {
 
 	private final void gpCheckForUpdates() {
 		cfg = this.getConfig();
-		String dlurl = "https://raw.github.com/GetPerms/GetPerms/master/dlurl";
-		String check = "https://raw.github.com/GetPerms/GetPerms/master/ver";
+		String dlurl = "https://raw.github.com/GetPerms/GetPerms/master/checks/dlurl";
+		String check = "https://raw.github.com/GetPerms/GetPerms/master/checks/ver";
 		String checkdev = "https://raw.github.com/GetPerms/GetPerms/master/checks/dev";
 		String u = "https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar";
 		String line;
@@ -189,8 +189,6 @@ public class GetPerms extends JavaPlugin {
 				URL dlcheck = new URL(dlurl);
 				BufferedReader a = new BufferedReader(new InputStreamReader(dlcheck.openStream()));
 				u = a.readLine();
-			}
-			if(cfg.getBoolean("devBuilds", false)){
 				URL client = new URL(check);
 				BufferedReader buf = new BufferedReader(new InputStreamReader(client.openStream()));
 				line = buf.readLine();

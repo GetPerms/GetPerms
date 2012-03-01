@@ -1,6 +1,6 @@
 name: GetPerms
 main: com.github.GetPerms.GetPerms.GetPerms
-version: 1.0.1
+version: 1.0.2
 commands:
   getpermsregen:
     description: Regenerates the files listing the permission nodes.
