@@ -52,6 +52,8 @@ public class GetPerms extends JavaPlugin {
 		WTF = new WriteToFile(this);
 		cfg = this.getConfig();
 		pdf = this.getDescription();
+		gpCreateCfg();
+		ConfHandler.restore();
 		gpversion = pdf.getVersion();
 		getLogger().info("This plugin supports PermissionsEx. This plugin");
 		getLogger().info("will use it if detected.");
@@ -62,13 +64,11 @@ public class GetPerms extends JavaPlugin {
 		else {
 			getLogger().info("PermissionsEx detected! Using as permissions plugin!");
 		}
-		gpCreateCfg();
-		ConfHandler.restore();
 		debug("CFG version: "+cfg.getString("cfgV")+" Plugin version: "+gpversion);
 		if (!cfg.getString("cfgV").equalsIgnoreCase(gpversion)) {
 			debug("Config version does not match jar version.");
 			try {
-				cfg.set("v", gpversion);
+				cfg.set("cfgV", gpversion);
 				debug("Config version changed to match jar version.");
 				getDataFolder().mkdir();
 				if (!gpdf.exists()) {
@@ -76,7 +76,8 @@ public class GetPerms extends JavaPlugin {
 				}
 				getLogger().info("Downloading changelog and readme...");
 				dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
-				getLogger().info("Downloaded Changelog.txt to 'plugins/GetPerms/Changelog.txt'");
+				getLogger().info("Downloaded Changelog.txt to");
+				getLogger().info("'plugins/GetPerms/Changelog.txt'");
 				dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
 				getLogger().info("Downloaded ReadMe.txt to 'plugins/GetPerms/ReadMe.txt'");
 				dlstate = false;
@@ -96,7 +97,7 @@ public class GetPerms extends JavaPlugin {
 				getLogger().info("The readme is available at");
 				getLogger().info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
 				getLogger().info("and the changelog is available at");
-				getLogger().info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
+				getLogger().info("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt");
 				dlstate = false;
 			} catch (IOException e) {
 				debug("IOException thrown, setting firstRun to true...");
@@ -176,26 +177,50 @@ public class GetPerms extends JavaPlugin {
 	}
 
 	private final void gpCheckForUpdates() {
+		cfg = this.getConfig();
+		String dlurl = "https://raw.github.com/GetPerms/GetPerms/master/dlurl";
 		String check = "https://raw.github.com/GetPerms/GetPerms/master/ver";
+		String checkdev = "https://raw.github.com/GetPerms/GetPerms/master/checks/dev";
+		String u = "https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar";
+		String line;
+		boolean dv;
 		try {
-			URL client = new URL(check);
-			BufferedReader buf = new BufferedReader(new InputStreamReader(client.openStream()));
-			String line = buf.readLine();
-			if (gpnewer(gpversion, line)) {
+			if(cfg.getBoolean("devBuilds", false)){
+				URL dlcheck = new URL(dlurl);
+				BufferedReader a = new BufferedReader(new InputStreamReader(dlcheck.openStream()));
+				u = a.readLine();
+			}
+			if(cfg.getBoolean("devBuilds", false)){
+				URL client = new URL(check);
+				BufferedReader buf = new BufferedReader(new InputStreamReader(client.openStream()));
+				line = buf.readLine();
+				dv = false;
+			}
+			else{
+				URL client = new URL(checkdev);
+				BufferedReader buf = new BufferedReader(new InputStreamReader(client.openStream()));
+				line = buf.readLine();
+				dv = true;
+			}
+			if (gpnewer(gpversion, line, dv)) {
 				getLogger().info("Newest GetPerms version" + line + " is available.");
 				if (cfg.getBoolean("autoDownload", true)) {
 					if (!uf.exists()) {
 						uf.mkdir();
 					}
-					getLogger().info("Downloading latest release...");
-					dlFile("https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar", updt);
+					if(cfg.getBoolean("devBuilds", false))
+						getLogger().info("Downloading latest recommended release...");
+					else
+						getLogger().info("Downloading latest developmental build...");
+					dlFile(u, updt);
 					getLogger().info("Newest version of GetPerms is located in");
 					getLogger().info("'server_root_dir/update/GetPerms.jar'.");
 				}
 				else {
 					getLogger().info("Newest GetPerms version" + line + " is available for download, you can");
-					getLogger().info("get it at https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar");
-					getLogger().info("or http://dev.bukkit.org/server-mods/getperms/files");
+					getLogger().info("get it at "+u);
+					getLogger().info("or the latest dev build at");
+					getLogger().info("http://dev.bukkit.org/server-mods/getperms/files");
 				}
 			}
 			else
@@ -258,31 +283,36 @@ public class GetPerms extends JavaPlugin {
 		}
 	}
 
-	private final boolean gpnewer(String current, String check) {
-		boolean result = false;
-		String[] currentVersion = current.split("\\.");
-		String[] checkVersion = check.split("\\.");
-		int i = Integer.parseInt(currentVersion[0]);
-		int j = Integer.parseInt(checkVersion[0]);
-		if(i>j)
-			result = false;
-		else if(i==j){
-			i = Integer.parseInt(currentVersion[1]);
-			j = Integer.parseInt(checkVersion[1]);
+	private final boolean gpnewer(String current, String check, boolean dev) {
+		if (!dev){
+			boolean result = false;
+			String[] currentVersion = current.split("\\.");
+			String[] checkVersion = check.split("\\.");
+			int i = Integer.parseInt(currentVersion[0]);
+			int j = Integer.parseInt(checkVersion[0]);
 			if(i>j)
 				result = false;
-			else if(i == j){
-				i = Integer.parseInt(currentVersion[2]);
-				j = Integer.parseInt(checkVersion[2]);
-				if(i >= j)
+			else if(i==j){
+				i = Integer.parseInt(currentVersion[1]);
+				j = Integer.parseInt(checkVersion[1]);
+				if(i>j)
 					result = false;
-				else
+				else if(i == j){
+					i = Integer.parseInt(currentVersion[2]);
+					j = Integer.parseInt(checkVersion[2]);
+					if(i >= j)
+						result = false;
+					else
+						result = true;
+				}else
 					result = true;
 			}else
 				result = true;
-		}else
-			result = true;
-		return result;
+			return result;
+		}
+		else{
+			return true;
+		}
 	}
 
 	private final void gpCreateCfg() {

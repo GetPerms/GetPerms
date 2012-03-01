@@ -20,6 +20,7 @@ public class ConfigHandler {
 	private boolean debugMode;
 	private boolean disableOnFinish;
 	private String cfgV;
+	private boolean devBuilds;
 
 	public ConfigHandler(GetPerms gp)
 	{
@@ -42,6 +43,7 @@ public class ConfigHandler {
 		autoDownload = cfg.getBoolean("autoDownload");
 		debugMode = cfg.getBoolean("debugMode");
 		disableOnFinish = cfg.getBoolean("disableOnFinish");
+		devBuilds = cfg.getBoolean("devBuilds");
 		cfgV = cfg.getString("cfgV");
 
 		pw.println("#GetPerms config file");
@@ -71,6 +73,9 @@ public class ConfigHandler {
 		pw.println("#Should not be true if autoGen is false.");
 		pw.println("disableOnFinish: "+disableOnFinish);
 		pw.println("");
+		pw.println("#Download the latest dev build? May have bugs and errors.");
+		pw.println("#If set to false, will only download the latest recommended builds");
+		pw.println("devBuilds: "+devBuilds);
 		pw.println("#Debug if needed for errors/bugs/info.");
 		pw.println("debugMode: "+debugMode);
 
@@ -92,6 +97,7 @@ public class ConfigHandler {
 		autoDownload = cfg.getBoolean("autoDownload");
 		debugMode = cfg.getBoolean("debugMode");
 		disableOnFinish = cfg.getBoolean("disableOnFinish");
+		devBuilds = cfg.getBoolean("devBuilds");
 		cfgV = gp.gpversion;
 
 		pw.println("cfgV: \""+cfgV+"\"");
@@ -100,6 +106,7 @@ public class ConfigHandler {
 		pw.println("autoUpdate: "+autoUpdate);
 		pw.println("autoDownload: "+autoDownload);
 		pw.println("disableOnFinish: "+disableOnFinish);
+		pw.println("devBuilds: "+devBuilds);
 		pw.println("debugMode: "+debugMode);
 
 		pw.close();

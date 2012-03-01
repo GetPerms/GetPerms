@@ -1,10 +1,17 @@
 Changelog:
 
+v1.0.1 (2/29/12)
+Change to method used to download files
+Now downloads the latest recommended build, not the dev build
+Added devBuilds key to config, to control downloading the latest devbuild or recommended build.
+Actually fixed plugin always downloading ReadMe and Changelog files. The plugin is only supposed to download them when the plugin is updated.
+
 v1.0.0 (2/28/12)
 Major release
 Added command to regenerate the permissions files, or generate it if it doesn't exist.
 Useful if you set autoGen to false.
 PermissionsEx support for the command (also supports whatever PEX supports)
+Fixed plugin always downloading the ReadMe and Changelog files at each startup
 
 v0.0.7 (2/21/12)
 Added disable on finish in config

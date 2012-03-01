@@ -13,6 +13,15 @@ Usage:
   2. Go into the server root directory
   3. Open 'pnodes.txt'
 
+Commands:
+/getperms regen
+/getpermsregen
+/gp regen
+/gpregen
+
+Permission Nodes:
+getperms.regen
+
 pnodes.txt:
   Each line is one separate permission node. This file is useful if you want one to just copy and paste the nodes without having to highlight each line separately to avoid copying the description. A permission node's description is available in 'pnodesfull.txt' which is also in the server root directory.
 
