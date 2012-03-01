@@ -1,9 +1,12 @@
 Changelog:
 
+v1.0.3 (1/1/12)
+Fixed always downloading developmental build regardless of config
+
 v1.0.2 (1/1/12)
 Updated plugin to use new URL's; forgot to update in 1.0.1
 
-v1.0.1 (2/29/12)
+v1.0.1 (1/1/12)
 Change to method used to download files
 Now downloads the latest recommended build, not the dev build
 Added devBuilds key to config, to control downloading the latest devbuild or recommended build.

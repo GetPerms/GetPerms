@@ -55,6 +55,7 @@ public class GetPerms extends JavaPlugin {
 		gpCreateCfg();
 		ConfHandler.restore();
 		gpversion = pdf.getVersion();
+		debugValues();
 		getLogger().info("This plugin supports PermissionsEx. This plugin");
 		getLogger().info("will use it if detected.");
 		if (usePEX()){
@@ -176,8 +177,29 @@ public class GetPerms extends JavaPlugin {
 		return false;
 	}
 
+	private final void debugValues(){
+		cfg = this.getConfig();
+		boolean firstRun = cfg.getBoolean("firstRun");
+		boolean autoGen = cfg.getBoolean("autoGen");
+		boolean autoUpdate = cfg.getBoolean("autoUpdate");
+		boolean autoDownload = cfg.getBoolean("autoDownload");
+		boolean debugMode = cfg.getBoolean("debugMode");
+		boolean disableOnFinish = cfg.getBoolean("disableOnFinish");
+		boolean devBuilds = cfg.getBoolean("devBuilds");
+		String cfgV = cfg.getString("cfgV");
+		debug("cfgV: \""+cfgV+"\"");
+		debug("firstRun: "+firstRun);
+		debug("autoGen: "+autoGen);
+		debug("autoUpdate: "+autoUpdate);
+		debug("autoDownload: "+autoDownload);
+		debug("disableOnFinish: "+disableOnFinish);
+		debug("devBuilds: "+devBuilds);
+		debug("debugMode: "+debugMode);
+	}
+
 	private final void gpCheckForUpdates() {
 		cfg = this.getConfig();
+		boolean devb = cfg.getBoolean("devBuilds");
 		String dlurl = "https://raw.github.com/GetPerms/GetPerms/master/checks/dlurl";
 		String check = "https://raw.github.com/GetPerms/GetPerms/master/checks/ver";
 		String checkdev = "https://raw.github.com/GetPerms/GetPerms/master/checks/dev";
@@ -185,7 +207,7 @@ public class GetPerms extends JavaPlugin {
 		String line;
 		boolean dv;
 		try {
-			if(cfg.getBoolean("devBuilds", false)){
+			if(!devb){
 				URL dlcheck = new URL(dlurl);
 				BufferedReader a = new BufferedReader(new InputStreamReader(dlcheck.openStream()));
 				u = a.readLine();
@@ -206,10 +228,12 @@ public class GetPerms extends JavaPlugin {
 					if (!uf.exists()) {
 						uf.mkdir();
 					}
-					if(cfg.getBoolean("devBuilds", false))
+					if(!devb){
 						getLogger().info("Downloading latest recommended release...");
-					else
+					}
+					else{
 						getLogger().info("Downloading latest developmental build...");
+					}
 					dlFile(u, updt);
 					getLogger().info("Newest version of GetPerms is located in");
 					getLogger().info("'server_root_dir/update/GetPerms.jar'.");
@@ -218,7 +242,7 @@ public class GetPerms extends JavaPlugin {
 					getLogger().info("Newest GetPerms version" + line + " is available for download, you can");
 					getLogger().info("get it at "+u);
 					getLogger().info("or the latest dev build at");
-					getLogger().info("http://dev.bukkit.org/server-mods/getperms/files");
+					getLogger().info("https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar");
 				}
 			}
 			else
