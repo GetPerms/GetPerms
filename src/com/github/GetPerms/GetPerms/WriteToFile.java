@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.lang.StringBuilder;
 
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
@@ -26,16 +25,16 @@ public final class WriteToFile {
 		
 		plist = p.getDescription().getPermissions();
 		if (!plist.isEmpty()) {
-			gp.pw2.println((new StringBuilder()).append("----").append(p.getDescription().getName()).append("----").toString());
+			gp.pw2.println("----"+p.getDescription().getName()+"----");
 		}
 		
 		for (Permission pr : plist) {
-			gp.pw1.println((new StringBuilder()).append(pr.getName()).toString());
+			gp.pw1.println(pr.getName().toString());
 			if (pr.getDescription() == "") {
-				gp.pw2.println((new StringBuilder()).append(pr.getName()).append(" - ").append("No description given").toString());
+				gp.pw2.println(pr.getName()+" - "+"No description given");
 			}
 			else {
-				gp.pw2.println((new StringBuilder()).append(pr.getName()).append(" - ").append(pr.getDescription()).toString());
+				gp.pw2.println(pr.getName()+" - "+pr.getDescription());
 			}
 	    }
 	}

@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.StringBuilder;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -151,7 +150,7 @@ public class GetPerms extends JavaPlugin {
 		} catch (IOException e) {
 			PST(e);
 		}
-		getLogger().info(new StringBuilder().append("GetPerms ").append(gpversion).append(" enabled!").toString());
+		getLogger().info("GetPerms "+gpversion+" enabled!");
 		getLogger().info("GetPerms is the work of Smiley43210, with the help of");
 		getLogger().info("Tahkeh, wwsean08, desmin88, and many others. Thanks!");
 		if (cfg.getBoolean("autoUpdate", true)) {
@@ -167,7 +166,7 @@ public class GetPerms extends JavaPlugin {
 	@Override
 	public void onDisable() { 
 		ConfHandler.addComments();
-		getLogger().info(new StringBuilder().append("GetPerms ").append(gpversion).append(" unloaded").toString());
+		getLogger().info("GetPerms "+gpversion+" unloaded");
 	}
 
 	public final boolean usePEX() {

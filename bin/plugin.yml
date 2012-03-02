@@ -1,4 +1,5 @@
 name: GetPerms
+author: Smiley43210
 main: com.github.GetPerms.GetPerms.GetPerms
 version: 1.0.3
 commands:
