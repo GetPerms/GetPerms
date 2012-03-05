@@ -52,6 +52,7 @@ public class GetPerms extends JavaPlugin {
 		cfg = this.getConfig();
 		pdf = this.getDescription();
 		gpCreateCfg();
+		cfg = this.getConfig();
 		ConfHandler.restore();
 		gpversion = pdf.getVersion();
 		debugValues();
@@ -76,10 +77,10 @@ public class GetPerms extends JavaPlugin {
 				}
 				getLogger().info("Downloading changelog and readme...");
 				dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
-				getLogger().info("Downloaded Changelog.txt to");
+				getLogger().info("Downloaded changelog to");
 				getLogger().info("'plugins/GetPerms/Changelog.txt'");
 				dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
-				getLogger().info("Downloaded ReadMe.txt to 'plugins/GetPerms/ReadMe.txt'");
+				getLogger().info("Downloaded readme to 'plugins/GetPerms/ReadMe.txt'");
 				dlstate = false;
 				debug("Downloads succeded, firstRun being set to false...");
 				cfg.set("firstRun", false);
