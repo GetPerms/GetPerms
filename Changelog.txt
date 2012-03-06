@@ -1,5 +1,10 @@
 Changelog:
 
+v1.0.5 (3/6/12)
+Added usage stat sending
+Start of database retrieval
+Minor changes here and there
+
 v1.0.4 (3/5/12)
 Removed StringBuilders
 Cleaned code

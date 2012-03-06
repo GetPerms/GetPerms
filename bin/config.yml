@@ -3,11 +3,15 @@
 #Config version
 #Do not change
 cfgV_info: "Do not change"
-cfgV: "1.0.4"
+cfgV: "1.0.5"
 
 #Is it the first run?
 info_firstRun: "Do not change. May still be true after you run it, but just leave it. Leave it. Leave it. Don't change it. Let it be."
 firstRun: true
+
+#Should this plugin send usage stats to metrics.griefcraft.com?
+info_sendStats: "Should this plugin send usage stats to metrics.griefcraft.com?"
+sendStats: true
 
 #Weather or not to automatically generate the permissions files on startup
 info_autoGen: "Weather or not to automatically generate the permissions files on startup"

@@ -56,6 +56,20 @@ public class GetPerms extends JavaPlugin {
 		ConfHandler.restore();
 		gpversion = pdf.getVersion();
 		debugValues();
+		if(cfg.getBoolean("sendStats")){
+			getLogger().info("This plugin will send usage stats to metrics.griefcraft.com");
+			getLogger().info("every 10 minutes. Option to disable is in the config.");
+			try {
+			    Metrics metrics = new Metrics();
+			    metrics.beginMeasuringPlugin(this);
+			} catch (IOException e) {
+			    PST(e);
+			}
+		}
+		else{
+			getLogger().info("This plugin is not sending usage stats. Option to");
+			getLogger().info("enable is in the config.");
+		}
 		getLogger().info("This plugin supports PermissionsEx. This plugin");
 		getLogger().info("will use it if detected.");
 		if (usePEX()){
@@ -341,7 +355,6 @@ public class GetPerms extends JavaPlugin {
 		cfg = this.getConfig();
 		cfg.options().copyDefaults(true);
 		this.saveConfig();
-		//Getting ready for option changes
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
@@ -375,6 +388,17 @@ public class GetPerms extends JavaPlugin {
 			getLogger().info("[Debug] "+i);
 		}
 	}
+
+	/*
+	public final int count() {
+		this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+
+		    public void run() {
+		        System.out.println("This message is printed by an async thread");
+		    }
+		}, 60L, 200L);
+	}
+	*/
 
 	@SuppressWarnings("unused")
 	private final void gpCreateMisc() {

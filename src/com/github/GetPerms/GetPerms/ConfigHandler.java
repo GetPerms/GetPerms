@@ -14,6 +14,7 @@ public class ConfigHandler {
 	private File cfgf = new File("plugins/GetPerms/config.yml");
 	private PrintWriter pw;
 	private boolean firstRun;
+	private boolean sendStats;
 	private boolean autoGen;
 	private boolean autoUpdate;
 	private boolean autoDownload;
@@ -38,6 +39,7 @@ public class ConfigHandler {
 		}
 
 		firstRun = cfg.getBoolean("firstRun");
+		sendStats = cfg.getBoolean("sendStats");
 		autoGen = cfg.getBoolean("autoGen");
 		autoUpdate = cfg.getBoolean("autoUpdate");
 		autoDownload = cfg.getBoolean("autoDownload");
@@ -58,6 +60,9 @@ public class ConfigHandler {
 		pw.println("#Leave it alone. Don't change it. Let it be.");
 		pw.println("firstRun: "+firstRun);
 		pw.println("");
+		pw.println("#Should the plugin send usage stats to metrics.griefcraft.com?");
+		pw.println("sendStats: "+sendStats);
+		pw.println("");
 		pw.println("#Weather or not to automatically generate the permissions files on startup");
 		pw.println("autoGen: "+autoGen);
 		pw.println("");
@@ -76,6 +81,7 @@ public class ConfigHandler {
 		pw.println("#Download the latest dev build? May have bugs and errors.");
 		pw.println("#If set to false, will only download the latest recommended builds");
 		pw.println("devBuilds: "+devBuilds);
+		pw.println("");
 		pw.println("#Debug if needed for errors/bugs/info.");
 		pw.println("debugMode: "+debugMode);
 
@@ -92,6 +98,7 @@ public class ConfigHandler {
 		}
 
 		firstRun = cfg.getBoolean("firstRun");
+		sendStats = cfg.getBoolean("sendStats");
 		autoGen = cfg.getBoolean("autoGen");
 		autoUpdate = cfg.getBoolean("autoUpdate");
 		autoDownload = cfg.getBoolean("autoDownload");
@@ -102,6 +109,7 @@ public class ConfigHandler {
 
 		pw.println("cfgV: \""+cfgV+"\"");
 		pw.println("firstRun: "+firstRun);
+		pw.println("sendStats: "+sendStats);
 		pw.println("autoGen: "+autoGen);
 		pw.println("autoUpdate: "+autoUpdate);
 		pw.println("autoDownload: "+autoDownload);
