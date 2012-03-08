@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Logger;
 
 import org.bukkit.configuration.Configuration;
 
@@ -22,6 +23,7 @@ public class ConfigHandler {
 	private boolean disableOnFinish;
 	private String cfgV;
 	private boolean devBuilds;
+	Logger log = gp.getLogger();
 
 	public ConfigHandler(GetPerms gp)
 	{
@@ -35,7 +37,7 @@ public class ConfigHandler {
 			pw = new PrintWriter(new FileWriter(cfgf));
 		} catch (IOException e) {
 			gp.PST(e);
-			gp.getLogger().warning("Error adding comments to config.yml!");
+			log.warning("Error adding comments to config.yml!");
 		}
 
 		firstRun = cfg.getBoolean("firstRun");
@@ -94,7 +96,7 @@ public class ConfigHandler {
 			pw = new PrintWriter(new FileWriter(cfgf));
 		} catch (IOException e) {
 			gp.PST(e);
-			gp.getLogger().warning("Error adding comments to config.yml!");
+			log.warning("Error adding comments to config.yml!");
 		}
 
 		firstRun = cfg.getBoolean("firstRun");

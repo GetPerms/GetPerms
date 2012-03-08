@@ -15,7 +15,7 @@ public class retrievePluginNodes {
 	public retrievePluginNodes(GetPerms gp){
 		this.gp = gp;
 	}
-/*
+
 	public final void getDatabasePlugins(){
 		String list = "";
 		try {
@@ -28,6 +28,6 @@ public class retrievePluginNodes {
 			gp.PST(e);
 		}
 	}
-*/
+
 
 }

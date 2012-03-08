@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -43,8 +44,7 @@ public class GetPerms extends JavaPlugin {
 	public static PluginDescriptionFile pdf;
 	public static Configuration cfg;
 	private boolean dlstate = true;
-	private GPCommandPlayer cp = new GPCommandPlayer(this);
-	private GPCommandConsole cc = new GPCommandConsole(this);
+	Logger log = this.getLogger();
 
 	@Override
 	public void onEnable() { 
@@ -57,8 +57,8 @@ public class GetPerms extends JavaPlugin {
 		gpversion = pdf.getVersion();
 		debugValues();
 		if(cfg.getBoolean("sendStats")){
-			getLogger().info("This plugin will send usage stats to metrics.griefcraft.com");
-			getLogger().info("every 10 minutes. Option to disable is in the config.");
+			log.info("This plugin will send usage stats to metrics.griefcraft.com");
+			log.info("every 10 minutes. Option to disable is in the config.");
 			try {
 			    Metrics metrics = new Metrics();
 			    metrics.beginMeasuringPlugin(this);
@@ -67,17 +67,17 @@ public class GetPerms extends JavaPlugin {
 			}
 		}
 		else{
-			getLogger().info("This plugin is not sending usage stats. Option to");
-			getLogger().info("enable is in the config.");
+			log.info("This plugin is not sending usage stats. Option to");
+			log.info("enable is in the config.");
 		}
-		getLogger().info("This plugin supports PermissionsEx. This plugin");
-		getLogger().info("will use it if detected.");
+		log.info("This plugin supports PermissionsEx. This plugin");
+		log.info("will use it if detected.");
 		if (usePEX()){
-			getLogger().info("PermissionsEx was not detected. Permissions will");
-			getLogger().info("default to ops.");
+			log.info("PermissionsEx was not detected. Permissions will");
+			log.info("default to ops.");
 		}
 		else {
-			getLogger().info("PermissionsEx detected! Using as permissions plugin!");
+			log.info("PermissionsEx detected! Using as permissions plugin!");
 		}
 		debug("CFG version: "+cfg.getString("cfgV")+" Plugin version: "+gpversion);
 		if (!cfg.getString("cfgV").equalsIgnoreCase(gpversion)) {
@@ -89,12 +89,12 @@ public class GetPerms extends JavaPlugin {
 				if (!gpdf.exists()) {
 					gpdf.mkdir();
 				}
-				getLogger().info("Downloading changelog and readme...");
+				log.info("Downloading changelog and readme...");
 				dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
-				getLogger().info("Downloaded changelog to");
-				getLogger().info("'plugins/GetPerms/Changelog.txt'");
+				log.info("Downloaded changelog to");
+				log.info("'plugins/GetPerms/Changelog.txt'");
 				dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
-				getLogger().info("Downloaded readme to 'plugins/GetPerms/ReadMe.txt'");
+				log.info("Downloaded readme to 'plugins/GetPerms/ReadMe.txt'");
 				dlstate = false;
 				debug("Downloads succeded, firstRun being set to false...");
 				cfg.set("firstRun", false);
@@ -102,23 +102,23 @@ public class GetPerms extends JavaPlugin {
 				debug("MalformedURLException thrown, setting firstRun to true...");
 				cfg.set("firstRun", true);
 				PST(e);
-				getLogger().warning("Error downloading readme and changelog!");
+				log.warning("Error downloading readme and changelog!");
 				dlstate = false;
 			} catch (FileNotFoundException e) {
 				debug("FileNotFoundException thrown, setting firstRun to true...");
 				cfg.set("firstRun", true);
 				PST(e);
-				getLogger().warning("Error downloading readme and changelog!");
-				getLogger().info("The readme is available at");
-				getLogger().info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
-				getLogger().info("and the changelog is available at");
-				getLogger().info("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt");
+				log.warning("Error downloading readme and changelog!");
+				log.info("The readme is available at");
+				log.info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
+				log.info("and the changelog is available at");
+				log.info("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt");
 				dlstate = false;
 			} catch (IOException e) {
 				debug("IOException thrown, setting firstRun to true...");
 				cfg.set("firstRun", true);
 				PST(e);
-				getLogger().warning("Error downloading readme and changelog!");
+				log.warning("Error downloading readme and changelog!");
 				dlstate = false;
 			}
 		}
@@ -129,32 +129,32 @@ public class GetPerms extends JavaPlugin {
 				cfg.set("firstRun", false);
 				try {
 					getDataFolder().mkdir();
-					getLogger().info("Downloading changelog and readme...");
+					log.info("Downloading changelog and readme...");
 					dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
-					getLogger().info("Downloaded Changelog.txt to 'plugins/GetPerms/Changelog.txt'");
+					log.info("Downloaded Changelog.txt to 'plugins/GetPerms/Changelog.txt'");
 					dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
-					getLogger().info("Downloaded ReadMe.txt to 'plugins/GetPerms/ReadMe.txt'");
+					log.info("Downloaded ReadMe.txt to 'plugins/GetPerms/ReadMe.txt'");
 					debug("Downloads succeded; Second method.");
 					dlstate = false;
 				} catch (MalformedURLException e) {
 					debug("MalformedURLException thrown, setting firstRun to true...");
 					cfg.set("firstRun", true);
 					PST(e);
-					getLogger().warning("Error downloading readme and changelog!");
+					log.warning("Error downloading readme and changelog!");
 				} catch (FileNotFoundException e) {
 					debug("FileNotFoundException thrown, setting firstRun to true...");
 					cfg.set("firstRun", true);
 					PST(e);
-					getLogger().warning("Error downloading readme and changelog!");
-					getLogger().info("The readme is available at");
-					getLogger().info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
-					getLogger().info("and the changelog is available at");
-					getLogger().info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
+					log.warning("Error downloading readme and changelog!");
+					log.info("The readme is available at");
+					log.info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
+					log.info("and the changelog is available at");
+					log.info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
 				} catch (IOException e) {
 					debug("IOException thrown, setting firstRun to true...");
 					cfg.set("firstRun", true);
 					PST(e);
-					getLogger().warning("Error downloading readme and changelog!");
+					log.warning("Error downloading readme and changelog!");
 				}
 			}
 		}
@@ -165,11 +165,11 @@ public class GetPerms extends JavaPlugin {
 		} catch (IOException e) {
 			PST(e);
 		}
-		getLogger().info("GetPerms "+gpversion+" enabled!");
-		getLogger().info("GetPerms is the work of Smiley43210, with the help of");
-		getLogger().info("Tahkeh, wwsean08, desmin88, and many others. Thanks!");
+		log.info("GetPerms "+gpversion+" enabled!");
+		log.info("GetPerms is the work of Smiley43210, with the help of");
+		log.info("Tahkeh, wwsean08, desmin88, and many others. Thanks!");
 		if (cfg.getBoolean("autoUpdate", true)) {
-			getLogger().info("Checking for updates...");
+			log.info("Checking for updates...");
 			gpCheckForUpdates();
 		}
 		if (cfg.getBoolean("autoGen", true))
@@ -181,7 +181,7 @@ public class GetPerms extends JavaPlugin {
 	@Override
 	public void onDisable() { 
 		ConfHandler.addComments();
-		getLogger().info("GetPerms "+gpversion+" unloaded");
+		log.info("GetPerms "+gpversion+" unloaded");
 	}
 
 	public final boolean usePEX() {
@@ -237,36 +237,36 @@ public class GetPerms extends JavaPlugin {
 				dv = true;
 			}
 			if (gpnewer(gpversion, line, dv)) {
-				getLogger().info("Newest GetPerms version" + line + " is available.");
+				log.info("Newest GetPerms version" + line + " is available.");
 				if (cfg.getBoolean("autoDownload", true)) {
 					if (!uf.exists()) {
 						uf.mkdir();
 					}
 					if(!devb){
-						getLogger().info("Downloading latest recommended release...");
+						log.info("Downloading latest recommended release...");
 					}
 					else{
-						getLogger().info("Downloading latest developmental build...");
+						log.info("Downloading latest developmental build...");
 					}
 					dlFile(u, updt);
-					getLogger().info("Newest version of GetPerms is located in");
-					getLogger().info("'server_root_dir/update/GetPerms.jar'.");
+					log.info("Newest version of GetPerms is located in");
+					log.info("'server_root_dir/update/GetPerms.jar'.");
 				}
 				else {
-					getLogger().info("Newest GetPerms version" + line + " is available for download, you can");
-					getLogger().info("get it at "+u);
-					getLogger().info("or the latest dev build at");
-					getLogger().info("https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar");
+					log.info("Newest GetPerms version" + line + " is available for download, you can");
+					log.info("get it at "+u);
+					log.info("or the latest dev build at");
+					log.info("https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar");
 				}
 			}
 			else
-				getLogger().info("You have the latest version!");
+				log.info("You have the latest version!");
 		} catch (MalformedURLException e) {
 			PST(e);
-			getLogger().warning("Unable to check for updates.");
+			log.warning("Unable to check for updates.");
 		} catch (IOException e) {
 			PST(e);
-			getLogger().warning("Unable to check for updates.");
+			log.warning("Unable to check for updates.");
 		}
 	}
 
@@ -291,15 +291,15 @@ public class GetPerms extends JavaPlugin {
 	public final void genFiles(boolean a){
 		pluginlist = pm.getPlugins();
 		if (a) {
-			getLogger().info("Retrieved plugin list!");
-			getLogger().info("Retrieving permission nodes...");
+			log.info("Retrieved plugin list!");
+			log.info("Retrieving permission nodes...");
 		}
 		for (Plugin p : pluginlist) {
 			try {
 				WTF.WritePNodes(p);
 			} catch (IOException e) {
 				PST(e);
-				getLogger().warning("Error retrieving plugin list!");
+				log.warning("Error retrieving plugin list!");
 			}
 			if (!WTF.plist.isEmpty()) {
 				pw2.println("");
@@ -308,14 +308,14 @@ public class GetPerms extends JavaPlugin {
 		pw1.close();
 		pw2.close();
 		if(a){
-			getLogger().info("Compiled permission nodes into 'pnodes.txt' and");
-			getLogger().info("'pnodesfull.txt' in the server root folder.");
+			log.info("Compiled permission nodes into 'pnodes.txt' and");
+			log.info("'pnodesfull.txt' in the server root folder.");
 		}
 		try {
 			WTF.WritePluginList();
 		} catch (IOException e) {
 			PST(e);
-			getLogger().warning("Error generating plugin list!");
+			log.warning("Error generating plugin list!");
 		}
 	}
 
@@ -358,6 +358,8 @@ public class GetPerms extends JavaPlugin {
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
+		GPCommandPlayer cp = new GPCommandPlayer(this);
+		GPCommandConsole cc = new GPCommandConsole(this);
 		if (!(sender instanceof Player)) {
 			// Command sent by console/plugin
 			cc.cmdHandler(sender, cmd, commandLabel, args);
@@ -385,7 +387,7 @@ public class GetPerms extends JavaPlugin {
 
 	private final void debug(String i) {
 		if (cfg.getBoolean("debugMode", true)) { 
-			getLogger().info("[Debug] "+i);
+			log.info("[Debug] "+i);
 		}
 	}
 
@@ -408,7 +410,7 @@ public class GetPerms extends JavaPlugin {
 			new File(getDataFolder(), "plugins.yml").createNewFile();
 			} catch (Exception e) {
 				e.printStackTrace();
-				getLogger().info("[GetPerms] Error occurred while creating plugins.yml (plugin list)!");
+				log.info("[GetPerms] Error occurred while creating plugins.yml (plugin list)!");
 				getServer().getPluginManager().disablePlugin(this);
 				return;
 			}

@@ -4,21 +4,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import ru.tehkode.permissions.PermissionManager;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
-
 public class GPCommandConsole {
 
 	GetPerms gp;
-	PermissionManager permissions;
 
 	public GPCommandConsole(GetPerms gp){
 		this.gp = gp;
 	}
 
 	public final boolean cmdHandler(CommandSender i, Command j, String k, String[] l){
-		if(gp.usePEX())
-			PermissionsEx.getPermissionManager();
 		if(j.getName().equalsIgnoreCase("getperms") || j.getName().equalsIgnoreCase("gp")){
 			if (l.length > 1) {
 				i.sendMessage(ChatColor.RED+"Too many arguments!");
