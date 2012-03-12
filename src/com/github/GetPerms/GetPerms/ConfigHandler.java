@@ -10,9 +10,9 @@ import org.bukkit.configuration.Configuration;
 
 public class ConfigHandler {
 
-	private GetPerms gp;
+	private final GetPerms gp;
 	private static Configuration cfg;
-	private File cfgf = new File("plugins/GetPerms/config.yml");
+	private final File cfgf = new File("plugins/GetPerms/config.yml");
 	private PrintWriter pw;
 	private boolean firstRun;
 	private boolean sendStats;
@@ -23,7 +23,6 @@ public class ConfigHandler {
 	private boolean disableOnFinish;
 	private String cfgV;
 	private boolean devBuilds;
-	Logger log = gp.getLogger();
 
 	public ConfigHandler(GetPerms gp)
 	{
@@ -31,6 +30,7 @@ public class ConfigHandler {
 	}
 
 	public final void addComments() {
+		Logger log = gp.getLogger();
 		cfg = gp.getConfig();
 
 		try {
@@ -91,6 +91,7 @@ public class ConfigHandler {
 	}
 
 	public final void restore() {
+		Logger log = gp.getLogger();
 		cfg = gp.getConfig();
 		try {
 			pw = new PrintWriter(new FileWriter(cfgf));
