@@ -47,34 +47,31 @@ public class GPCommandPlayer {
 					help(i);
 					return false;
 				}
-			}
-			else {
-				if (i.isOp()) {
-					if (l.length > 1) {
-						i.sendMessage(ChatColor.RED+"Too many arguments!");
-						help(i);
-						return false;
-					}
-					else if (l.length < 1) {
-						i.sendMessage(ChatColor.RED+"Too few arguments!");
-						help(i);
-						return false;
-					}
-					if (l[0].equalsIgnoreCase("regen")) {
-						i.sendMessage(ChatColor.AQUA+"[GetPerms] Regenerating permission files...");
-						gp.genFiles(false);
-						i.sendMessage(ChatColor.AQUA+"[GetPerms] Files regenerated!");
-						return true;
-					}
-					else {
-						i.sendMessage(ChatColor.RED+"Unknown command.");
-						help(i);
-						return false;
-					}
+			} else if (i.isOp()) {
+				if (l.length > 1) {
+					i.sendMessage(ChatColor.RED+"Too many arguments!");
+					help(i);
+					return false;
+				}
+				else if (l.length < 1) {
+					i.sendMessage(ChatColor.RED+"Too few arguments!");
+					help(i);
+					return false;
+				}
+				if (l[0].equalsIgnoreCase("regen")) {
+					i.sendMessage(ChatColor.AQUA+"[GetPerms] Regenerating permission files...");
+					gp.genFiles(false);
+					i.sendMessage(ChatColor.AQUA+"[GetPerms] Files regenerated!");
+					return true;
+				}
+				else {
+					i.sendMessage(ChatColor.RED+"Unknown command.");
+					help(i);
+					return false;
 				}
 			}
 		}
-		else if(j.getName().equalsIgnoreCase("getpermsregen") || j.getName().equalsIgnoreCase("gpregen")){
+		else if(j.getName().equalsIgnoreCase("getpermsregen") || j.getName().equalsIgnoreCase("gpregen"))
 			if(gp.usePEX()){
 				if (!permissions.has((Player) i, "getperms.regen")){
 					i.sendMessage(ChatColor.RED+"You don't have permission!");
@@ -89,21 +86,17 @@ public class GPCommandPlayer {
 				gp.genFiles(false);
 				i.sendMessage(ChatColor.AQUA+"[GetPerms] Files regenerated!");
 				return true;
-			}
-			else {
-				if (i.isOp()) {
-					if (l.length > 0) {
-						i.sendMessage(ChatColor.RED+"Unknown command.");
-						help(i);
-						return false;
-					}
-					i.sendMessage(ChatColor.AQUA+"[GetPerms] Regenerating permission files...");
-					gp.genFiles(false);
-					i.sendMessage(ChatColor.AQUA+"[GetPerms] Files regenerated!");
-					return true;
+			} else if (i.isOp()) {
+				if (l.length > 0) {
+					i.sendMessage(ChatColor.RED+"Unknown command.");
+					help(i);
+					return false;
 				}
+				i.sendMessage(ChatColor.AQUA+"[GetPerms] Regenerating permission files...");
+				gp.genFiles(false);
+				i.sendMessage(ChatColor.AQUA+"[GetPerms] Files regenerated!");
+				return true;
 			}
-		}
 		return false;
 	}
 
