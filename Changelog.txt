@@ -1,6 +1,10 @@
 Changelog:
 
-v1.0.7 (3/12/12)
+v1.0.8 (3/24/12)
+Fixed NPE in 1.0.7 (for real)
+Minor changes
+
+v1.0.7 (3/12/12) --Broken--
 Fixed NPE in 1.0.6
 
 v1.0.6 (3/8/12) --Broken--

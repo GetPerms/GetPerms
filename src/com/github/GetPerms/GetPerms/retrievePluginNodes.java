@@ -16,6 +16,7 @@ public class retrievePluginNodes {
 		this.gp = gp;
 	}
 
+	@SuppressWarnings("unused")
 	public final void getDatabasePlugins(){
 		String list = "";
 		try {

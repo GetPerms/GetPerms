@@ -31,22 +31,22 @@ public class GetPerms extends JavaPlugin{
 	ConfigHandler ConfHandler = new ConfigHandler(this);
 	PluginManager pm = Bukkit.getServer().getPluginManager();
 	public Plugin[] pluginlist;
-	private File file1 = new File("pnodes.txt");
-	private File file2 = new File("pnodesfull.txt");
-	private File rm = new File("plugins/GetPerms/ReadMe.txt");
-	private File cl = new File("plugins/GetPerms/Changelog.txt");
-	private File uf = new File("update");
-	private File gpdf = new File("plugins/GetPerms");
-	private File updt = new File("update/GetPerms.jar");
+	private final File file1 = new File("pnodes.txt");
+	private final File file2 = new File("pnodesfull.txt");
+	private final File rm = new File("plugins/GetPerms/ReadMe.txt");
+	private final File cl = new File("plugins/GetPerms/Changelog.txt");
+	private final File uf = new File("update");
+	private final File gpdf = new File("plugins/GetPerms");
+	private final File updt = new File("update/GetPerms.jar");
 	public PrintWriter pw1;
 	public PrintWriter pw2;
 	public static PluginDescriptionFile pdf;
 	public static Configuration cfg;
 	private boolean dlstate = true;
-	Logger log = getLogger();
 
 	@Override
 	public void onEnable(){
+		Logger log = this.getLogger();
 		WTF = new WriteToFile(this);
 		cfg = getConfig();
 		pdf = getDescription();
@@ -56,8 +56,8 @@ public class GetPerms extends JavaPlugin{
 		gpversion = pdf.getVersion();
 		debugValues();
 		if (cfg.getBoolean("sendStats")){
-			log.info("This plugin will send usage stats to metrics.griefcraft.com");
-			log.info("every 10 minutes. Option to disable is in the config.");
+			log.info("Sending usage stats to metrics.griefcraft.com every 10 minutes.");
+			log.info("Option to disable is in the config.");
 			try{
 				Metrics metrics = new Metrics();
 				metrics.beginMeasuringPlugin(this);
@@ -68,12 +68,10 @@ public class GetPerms extends JavaPlugin{
 			log.info("This plugin is not sending usage stats. Option to");
 			log.info("enable is in the config.");
 		}
-		log.info("This plugin supports PermissionsEx. This plugin");
-		log.info("will use it if detected.");
-		if (usePEX()){
-			log.info("PermissionsEx was not detected. Permissions will");
-			log.info("default to ops.");
-		}else
+		log.info("This plugin supports PermissionsEx, which will be used if detected.");
+		if (!usePEX())
+			log.info("PEx was not detected; Permissions defaulting to op's.");
+		else
 			log.info("PermissionsEx detected! Using as permissions plugin!");
 		debug("CFG version: " + cfg.getString("cfgV") + " Plugin version: " + gpversion);
 		if (!cfg.getString("cfgV").equalsIgnoreCase(gpversion)){
@@ -86,12 +84,10 @@ public class GetPerms extends JavaPlugin{
 					gpdf.mkdir();
 				log.info("Downloading changelog and readme...");
 				dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
-				log.info("Downloaded changelog to");
-				log.info("'plugins/GetPerms/Changelog.txt'");
 				dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
-				log.info("Downloaded readme to 'plugins/GetPerms/ReadMe.txt'");
+				log.info("The changelog and readme can be found in 'plugins/GetPerms/'");
 				dlstate = false;
-				debug("Downloads succeded, firstRun being set to false...");
+				debug("Downloads succeded; M1. firstRun being set to false...");
 				cfg.set("firstRun", false);
 			}catch (MalformedURLException e){
 				debug("MalformedURLException thrown, setting firstRun to true...");
@@ -125,10 +121,9 @@ public class GetPerms extends JavaPlugin{
 					getDataFolder().mkdir();
 					log.info("Downloading changelog and readme...");
 					dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
-					log.info("Downloaded Changelog.txt to 'plugins/GetPerms/Changelog.txt'");
 					dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
-					log.info("Downloaded ReadMe.txt to 'plugins/GetPerms/ReadMe.txt'");
-					debug("Downloads succeded; Second method.");
+					log.info("The changelog and readme can be found in 'plugins/GetPerms/'");
+					debug("Downloads succeded; M2.");
 					dlstate = false;
 				}catch (MalformedURLException e){
 					debug("MalformedURLException thrown, setting firstRun to true...");
@@ -174,6 +169,7 @@ public class GetPerms extends JavaPlugin{
 
 	@Override
 	public void onDisable(){
+		Logger log = this.getLogger();
 		ConfHandler.addComments();
 		log.info("GetPerms " + gpversion + " unloaded");
 	}
@@ -205,15 +201,20 @@ public class GetPerms extends JavaPlugin{
 	}
 
 	private final void gpCheckForUpdates(){
+		Logger log = this.getLogger();
 		cfg = getConfig();
 		boolean devb = cfg.getBoolean("devBuilds");
 		String dlurl = "https://raw.github.com/GetPerms/GetPerms/master/checks/dlurl";
 		String check = "https://raw.github.com/GetPerms/GetPerms/master/checks/ver";
 		String checkdev = "https://raw.github.com/GetPerms/GetPerms/master/checks/dev";
+		String force = "https://raw.github.com/GetPerms/GetPerms/master/checks/force";
 		String u = "https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar";
 		String line;
 		boolean dv;
 		try{
+			URL fa = new URL(force);
+			BufferedReader fb = new BufferedReader(new InputStreamReader(fa.openStream()));
+			String fc = fb.readLine();
 			if (!devb){
 				URL dlcheck = new URL(dlurl);
 				BufferedReader a = new BufferedReader(new InputStreamReader(dlcheck.openStream()));
@@ -228,6 +229,8 @@ public class GetPerms extends JavaPlugin{
 				line = buf.readLine();
 				dv = true;
 			}
+			if (fc == "true")
+				dv = true;
 			if (gpnewer(gpversion, line, dv)){
 				log.info("Newest GetPerms version" + line + " is available.");
 				if (cfg.getBoolean("autoDownload", true)){
@@ -273,6 +276,7 @@ public class GetPerms extends JavaPlugin{
 	}
 
 	public final void genFiles(boolean a){
+		Logger log = this.getLogger();
 		pluginlist = pm.getPlugins();
 		if (a){
 			log.info("Retrieved plugin list!");
@@ -351,6 +355,11 @@ public class GetPerms extends JavaPlugin{
 		return true;
 	}
 
+	/*
+	public void logFile(String x){
+
+	}
+	 */
 	public static void dlFile(String url, File file) throws MalformedURLException, IOException{
 		BufferedInputStream in = new BufferedInputStream(new java.net.URL(url).openStream());
 		FileOutputStream fos = new FileOutputStream(file);
@@ -364,21 +373,23 @@ public class GetPerms extends JavaPlugin{
 	}
 
 	private final void debug(String i){
+		Logger log = this.getLogger();
 		if (cfg.getBoolean("debugMode", true))
 			log.info("[Debug] " + i);
 	}
 
 	/*
-	 * public final int count() {
-	 * this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new
-	 * Runnable() {
-	 * 
-	 * public void run() {
-	 * System.out.println("This message is printed by an async thread"); } },
-	 * 60L, 200L); }
+	public final int count() {
+		this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new
+	Runnable() {
+
+	public void run() {
+		System.out.println("This message is printed by an async thread"); } },
+	60L, 200L); }
 	 */
 	@SuppressWarnings("unused")
 	private final void gpCreateMisc(){
+		Logger log = this.getLogger();
 		if (!new File(getDataFolder(), "plugins.yml").exists())
 			try{
 				getDataFolder().mkdir();
