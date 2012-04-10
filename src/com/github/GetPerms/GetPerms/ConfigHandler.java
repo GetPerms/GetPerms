@@ -16,6 +16,7 @@ public class ConfigHandler {
 	private PrintWriter pw;
 	private boolean firstRun;
 	private boolean sendStats;
+	private boolean silentMode;
 	private boolean autoGen;
 	private boolean autoUpdate;
 	private boolean autoDownload;
@@ -42,6 +43,7 @@ public class ConfigHandler {
 
 		firstRun = cfg.getBoolean("firstRun");
 		sendStats = cfg.getBoolean("sendStats");
+		silentMode = cfg.getBoolean("silentMode");
 		autoGen = cfg.getBoolean("autoGen");
 		autoUpdate = cfg.getBoolean("autoUpdate");
 		autoDownload = cfg.getBoolean("autoDownload");
@@ -60,10 +62,16 @@ public class ConfigHandler {
 		pw.println("#DO NOT CHANGE! It may still be true after you run it,");
 		pw.println("#but just leave it. It is supposed to do that. LEAVE IT!");
 		pw.println("#Leave it alone. Don't change it. Let it be.");
+		pw.println("#Used to manage displaying certain messages at startup.");
 		pw.println("firstRun: "+firstRun);
 		pw.println("");
 		pw.println("#Should the plugin send usage stats to metrics.griefcraft.com?");
 		pw.println("sendStats: "+sendStats);
+		pw.println("");
+		pw.println("#Display output on startup/shutdown? Does not display error messages or");
+		pw.println("#debug messages even if debug is enabled. Does not display error messages.");
+		pw.println("#Will still display 'GetPerms vX.X.X enabled!'");
+		pw.println("silentMode: "+silentMode);
 		pw.println("");
 		pw.println("#Weather or not to automatically generate the permissions files on startup");
 		pw.println("autoGen: "+autoGen);
@@ -102,6 +110,7 @@ public class ConfigHandler {
 
 		firstRun = cfg.getBoolean("firstRun");
 		sendStats = cfg.getBoolean("sendStats");
+		silentMode = cfg.getBoolean("silentMode");
 		autoGen = cfg.getBoolean("autoGen");
 		autoUpdate = cfg.getBoolean("autoUpdate");
 		autoDownload = cfg.getBoolean("autoDownload");
@@ -113,6 +122,7 @@ public class ConfigHandler {
 		pw.println("cfgV: \""+cfgV+"\"");
 		pw.println("firstRun: "+firstRun);
 		pw.println("sendStats: "+sendStats);
+		pw.println("silentMode: "+silentMode);
 		pw.println("autoGen: "+autoGen);
 		pw.println("autoUpdate: "+autoUpdate);
 		pw.println("autoDownload: "+autoDownload);

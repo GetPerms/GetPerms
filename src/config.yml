@@ -3,7 +3,7 @@
 #Config version
 #Do not change
 cfgV_info: "Do not change"
-cfgV: "1.0.8"
+cfgV: "1.0.9"
 
 #Is it the first run?
 info_firstRun: "Do not change. May still be true after you run it, but just leave it. Leave it. Leave it. Don't change it. Let it be."
@@ -12,6 +12,12 @@ firstRun: true
 #Should this plugin send usage stats to metrics.griefcraft.com?
 info_sendStats: "Should this plugin send usage stats to metrics.griefcraft.com?"
 sendStats: true
+
+#Display output on startup/shutdown? Does not display error messages or
+#debug messages even if debug is enabled. Does not display error messages.
+#Will still display 'GetPerms vX.X.X enabled!'
+info_silentMode: "false"
+silentMode: false
 
 #Weather or not to automatically generate the permissions files on startup
 info_autoGen: "Weather or not to automatically generate the permissions files on startup"

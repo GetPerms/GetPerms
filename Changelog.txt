@@ -1,5 +1,9 @@
 Changelog:
 
+v1.0.9 (4/10/12)
+Minor change in console output to make messages shorter
+Added silentMode, control via config
+
 v1.0.8 (3/24/12)
 Fixed NPE in 1.0.7 (for real)
 Minor changes
