@@ -101,8 +101,8 @@ public class GPCommandPlayer {
 	}
 
 	public final void help(CommandSender i){
-		i.sendMessage(ChatColor.DARK_RED+"Usage: /getperms <regen>");
-		i.sendMessage(ChatColor.DARK_RED+"Aliases: /getpermsregen, /gp <regen>, /gpregen");
+		i.sendMessage(ChatColor.DARK_RED+"Usage: /getperms regen");
+		i.sendMessage(ChatColor.DARK_RED+"Aliases: /getpermsregen, /gp regen, /gpregen");
 		i.sendMessage(ChatColor.DARK_RED+"Used to manually (re)generate the files");
 		i.sendMessage(ChatColor.DARK_RED+"containing the permission nodes list.");
 	}

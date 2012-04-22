@@ -1,5 +1,8 @@
 Changelog:
 
+v1.1.0 (4/21/12)
+Minor change in command usage message
+
 v1.0.9 (4/10/12)
 Minor change in console output to make messages shorter
 Added silentMode, control via config

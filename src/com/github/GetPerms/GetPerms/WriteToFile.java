@@ -9,34 +9,33 @@ import java.util.List;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 
-public final class WriteToFile {
+public final class WriteToFile{
 
 	private GetPerms gp;
 	public List<Permission> plist;
 	private File file = new File("pluginlist.txt");
 	private PrintWriter pw;
 
-	public WriteToFile(GetPerms gp)
-	{
+	public WriteToFile(GetPerms gp){
 		this.gp = gp;
 	}
 
-	public final void WritePNodes(Plugin p) throws IOException {
+	public final void WritePNodes(Plugin p) throws IOException{
 
 		plist = p.getDescription().getPermissions();
 		if (!plist.isEmpty())
-			gp.pw2.println("----"+p.getDescription().getName()+"----");
+			gp.pw2.println("----" + p.getDescription().getName() + "----");
 
-		for (Permission pr : plist) {
+		for (Permission pr : plist){
 			gp.pw1.println(pr.getName().toString());
 			if (pr.getDescription() == "")
-				gp.pw2.println(pr.getName()+" - "+"No description given");
+				gp.pw2.println(pr.getName() + " - " + "No description given");
 			else
-				gp.pw2.println(pr.getName()+" - "+pr.getDescription());
+				gp.pw2.println(pr.getName() + " - " + pr.getDescription());
 		}
 	}
 
-	public final void WritePluginList() throws IOException {
+	public final void WritePluginList() throws IOException{
 		pw = new PrintWriter(new FileWriter(file));
 		for (Plugin p : gp.pluginlist)
 			pw.println(p.getDescription().getName());

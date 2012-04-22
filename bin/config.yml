@@ -3,7 +3,7 @@
 #Config version
 #Do not change
 cfgV_info: "Do not change"
-cfgV: "1.0.9"
+cfgV: "1.1.0"
 
 #Is it the first run?
 info_firstRun: "Do not change. May still be true after you run it, but just leave it. Leave it. Leave it. Don't change it. Let it be."
