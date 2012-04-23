@@ -261,19 +261,19 @@ public class GetPerms extends JavaPlugin{
 
 	public final void PST(IOException e){
 		if (cfg.getBoolean("debugMode", true))
-			if(cfg.getBoolean("silentMode", false))
+			if (cfg.getBoolean("silentMode", false))
 				e.printStackTrace();
 	}
 
 	public final void PST(MalformedURLException e){
 		if (cfg.getBoolean("debugMode", true))
-			if(cfg.getBoolean("silentMode", false))
+			if (cfg.getBoolean("silentMode", false))
 				e.printStackTrace();
 	}
 
 	public final void PST(FileNotFoundException e){
 		if (cfg.getBoolean("debugMode", true))
-			if(cfg.getBoolean("silentMode", false))
+			if (cfg.getBoolean("silentMode", false))
 				e.printStackTrace();
 	}
 
@@ -376,19 +376,19 @@ public class GetPerms extends JavaPlugin{
 	private final void debug(String i){
 		Logger log = this.getLogger();
 		if (cfg.getBoolean("debugMode", true))
-			if(cfg.getBoolean("silentMode", false))
+			if (cfg.getBoolean("silentMode", false))
 				log.info("[Debug] " + i);
 	}
 
 	private final void info(String i){
 		Logger log = this.getLogger();
-		if(cfg.getBoolean("silentMode", false))
+		if (cfg.getBoolean("silentMode", false))
 			log.info(i);
 	}
 
 	private final void warn(String i){
 		Logger log = this.getLogger();
-		if(cfg.getBoolean("silentMode", false))
+		if (cfg.getBoolean("silentMode", false))
 			log.warning(i);
 	}
 
