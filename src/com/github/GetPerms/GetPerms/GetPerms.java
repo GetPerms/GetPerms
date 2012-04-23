@@ -278,10 +278,11 @@ public class GetPerms extends JavaPlugin{
 	}
 
 	public final void genFiles(boolean a){
+		TempRetrieval tr = new TempRetrieval(this);
 		pluginlist = pm.getPlugins();
 		if (a){
-			info("Retrieved plugin list!");
-			info("Retrieving permission nodes...");
+			debug("Retrieved plugin list!");
+			debug("Retrieving permission nodes...");
 		}
 		for (Plugin p : pluginlist){
 			try{
@@ -304,6 +305,13 @@ public class GetPerms extends JavaPlugin{
 		}catch (IOException e){
 			PST(e);
 			warn("Error generating plugin list!");
+		}
+		try{
+			tr.Get();
+		}catch (MalformedURLException e){
+			PST(e);
+		}catch (IOException e){
+			PST(e);
 		}
 	}
 
@@ -373,20 +381,20 @@ public class GetPerms extends JavaPlugin{
 		in.close();
 	}
 
-	private final void debug(String i){
+	private void debug(String i){
 		Logger log = this.getLogger();
 		if (cfg.getBoolean("debugMode", true))
 			if (cfg.getBoolean("silentMode", false))
 				log.info("[Debug] " + i);
 	}
 
-	private final void info(String i){
+	public void info(String i){
 		Logger log = this.getLogger();
 		if (cfg.getBoolean("silentMode", false))
 			log.info(i);
 	}
 
-	private final void warn(String i){
+	private void warn(String i){
 		Logger log = this.getLogger();
 		if (cfg.getBoolean("silentMode", false))
 			log.warning(i);
