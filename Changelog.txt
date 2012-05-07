@@ -1,5 +1,10 @@
 Changelog:
 
+v1.1.2 (5/7/12)
+Fixed AccessControlException (Issue 6)
+Attempt to fix the messages not being displayed in the console
+Shortened a few method names
+
 v1.1.1 (4/23/12)
 Added temporary method to download plugin nodes from database
 Shortened log output

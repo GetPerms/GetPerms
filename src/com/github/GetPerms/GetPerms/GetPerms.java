@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.AccessControlException;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -30,6 +31,7 @@ public class GetPerms extends JavaPlugin{
 	WriteToFile WTF;
 	ConfigHandler ConfHandler = new ConfigHandler(this);
 	PluginManager pm = Bukkit.getServer().getPluginManager();
+	Logger log = this.getLogger();
 	public Plugin[] pluginlist;
 	private final File file1 = new File("pnodes.txt");
 	private final File file2 = new File("pnodesfull.txt");
@@ -49,7 +51,7 @@ public class GetPerms extends JavaPlugin{
 		WTF = new WriteToFile(this);
 		cfg = getConfig();
 		pdf = getDescription();
-		gpCreateCfg();
+		createCfg();
 		cfg = getConfig();
 		ConfHandler.restore();
 		gpversion = pdf.getVersion();
@@ -159,7 +161,7 @@ public class GetPerms extends JavaPlugin{
 		info("Tahkeh, wwsean08, desmin88, and many others. Thanks!");
 		if (cfg.getBoolean("autoUpdate", true)){
 			info("Checking for updates...");
-			gpCheckForUpdates();
+			checkForUpdates();
 		}
 		if (cfg.getBoolean("autoGen", true))
 			genFiles(true);
@@ -200,7 +202,7 @@ public class GetPerms extends JavaPlugin{
 		debug("debugMode: " + debugMode);
 	}
 
-	private final void gpCheckForUpdates(){
+	private final void checkForUpdates(){
 		cfg = getConfig();
 		boolean devb = cfg.getBoolean("devBuilds");
 		String dlurl = "https://raw.github.com/GetPerms/GetPerms/master/checks/dlurl";
@@ -230,7 +232,7 @@ public class GetPerms extends JavaPlugin{
 			}
 			if (fc == "true")
 				dv = true;
-			if (gpnewer(gpversion, line, dv)){
+			if (newer(gpversion, line, dv)){
 				info("Newest GetPerms version" + line + " is available.");
 				if (cfg.getBoolean("autoDownload", true)){
 					if (!uf.exists())
@@ -256,6 +258,9 @@ public class GetPerms extends JavaPlugin{
 		}catch (IOException e){
 			PST(e);
 			warn("Unable to check for updates.");
+		}catch (AccessControlException e){
+			PST(e);
+			warn("Unable to check for updates.");
 		}
 	}
 
@@ -272,6 +277,12 @@ public class GetPerms extends JavaPlugin{
 	}
 
 	public final void PST(FileNotFoundException e){
+		if (cfg.getBoolean("debugMode", true))
+			if (cfg.getBoolean("silentMode", false))
+				e.printStackTrace();
+	}
+
+	public final void PST(AccessControlException e){
 		if (cfg.getBoolean("debugMode", true))
 			if (cfg.getBoolean("silentMode", false))
 				e.printStackTrace();
@@ -315,7 +326,7 @@ public class GetPerms extends JavaPlugin{
 		}
 	}
 
-	private final boolean gpnewer(String current, String check, boolean dev){
+	private final boolean newer(String current, String check, boolean dev){
 		if (!dev){
 			boolean result = false;
 			String[] currentVersion = current.split("\\.");
@@ -345,7 +356,7 @@ public class GetPerms extends JavaPlugin{
 			return true;
 	}
 
-	private final void gpCreateCfg(){
+	private final void createCfg(){
 		cfg = getConfig();
 		cfg.options().copyDefaults(true);
 		saveConfig();
@@ -381,21 +392,18 @@ public class GetPerms extends JavaPlugin{
 		in.close();
 	}
 
-	private void debug(String i){
-		Logger log = this.getLogger();
+	public final void debug(String i){
 		if (cfg.getBoolean("debugMode", true))
 			if (cfg.getBoolean("silentMode", false))
 				log.info("[Debug] " + i);
 	}
 
-	public void info(String i){
-		Logger log = this.getLogger();
+	public final void info(String i){
 		if (cfg.getBoolean("silentMode", false))
 			log.info(i);
 	}
 
-	private void warn(String i){
-		Logger log = this.getLogger();
+	public final void warn(String i){
 		if (cfg.getBoolean("silentMode", false))
 			log.warning(i);
 	}
@@ -410,8 +418,7 @@ public class GetPerms extends JavaPlugin{
 	60L, 200L); }
 	 */
 	@SuppressWarnings("unused")
-	private final void gpCreateMisc(){
-		Logger log = this.getLogger();
+	private final void createMisc(){
 		if (!new File(getDataFolder(), "plugins.yml").exists())
 			try{
 				getDataFolder().mkdir();
