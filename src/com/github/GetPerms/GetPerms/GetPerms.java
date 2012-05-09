@@ -31,7 +31,6 @@ public class GetPerms extends JavaPlugin{
 	WriteToFile WTF;
 	ConfigHandler ConfHandler = new ConfigHandler(this);
 	PluginManager pm = Bukkit.getServer().getPluginManager();
-	Logger log = this.getLogger();
 	public Plugin[] pluginlist;
 	private final File file1 = new File("pnodes.txt");
 	private final File file2 = new File("pnodesfull.txt");
@@ -393,17 +392,20 @@ public class GetPerms extends JavaPlugin{
 	}
 
 	public final void debug(String i){
+		Logger log = this.getLogger();
 		if (cfg.getBoolean("debugMode", true))
 			if (cfg.getBoolean("silentMode", false))
 				log.info("[Debug] " + i);
 	}
 
 	public final void info(String i){
+		Logger log = this.getLogger();
 		if (cfg.getBoolean("silentMode", false))
 			log.info(i);
 	}
 
 	public final void warn(String i){
+		Logger log = this.getLogger();
 		if (cfg.getBoolean("silentMode", false))
 			log.warning(i);
 	}
@@ -419,6 +421,7 @@ public class GetPerms extends JavaPlugin{
 	 */
 	@SuppressWarnings("unused")
 	private final void createMisc(){
+		Logger log = this.getLogger();
 		if (!new File(getDataFolder(), "plugins.yml").exists())
 			try{
 				getDataFolder().mkdir();

@@ -1,5 +1,8 @@
 Changelog:
 
+v1.1.3 (5/9/12)
+Fixed NullPointerException (Plugin failed to load)
+
 v1.1.2 (5/7/12)
 Fixed AccessControlException (Issue 6)
 Attempt to fix the messages not being displayed in the console
