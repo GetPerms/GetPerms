@@ -43,18 +43,19 @@ public class GetPerms extends JavaPlugin{
 	public PrintWriter pw2;
 	public static PluginDescriptionFile pdf;
 	public static Configuration cfg;
+	public Logger logger;
 	private boolean dlstate = true;
 
 	@Override
 	public void onEnable(){
-		WTF = new WriteToFile(this);
-		cfg = getConfig();
-		pdf = getDescription();
+		GetPerms.cfg = getConfig();
+		GetPerms.pdf = getDescription();
+		this.logger = this.getLogger();
 		createCfg();
-		cfg = getConfig();
 		ConfHandler.restore();
 		gpversion = pdf.getVersion();
 		debugValues();
+		WTF = new WriteToFile(this);
 		if (cfg.getBoolean("sendStats")){
 			info("Sending usage stats to metrics.griefcraft.com every 10 minutes.");
 			if (cfg.getBoolean("firstRun", true))
@@ -165,7 +166,7 @@ public class GetPerms extends JavaPlugin{
 		if (cfg.getBoolean("autoGen", true))
 			genFiles(true);
 		saveConfig();
-		if (cfg.getBoolean("disableOnFinish", true))
+		if (cfg.getBoolean("disableOnFinish", false))
 			getServer().getPluginManager().disablePlugin(this);
 	}
 
@@ -182,7 +183,6 @@ public class GetPerms extends JavaPlugin{
 	}
 
 	private final void debugValues(){
-		cfg = getConfig();
 		boolean firstRun = cfg.getBoolean("firstRun");
 		boolean autoGen = cfg.getBoolean("autoGen");
 		boolean autoUpdate = cfg.getBoolean("autoUpdate");
@@ -202,7 +202,6 @@ public class GetPerms extends JavaPlugin{
 	}
 
 	private final void checkForUpdates(){
-		cfg = getConfig();
 		boolean devb = cfg.getBoolean("devBuilds");
 		String dlurl = "https://raw.github.com/GetPerms/GetPerms/master/checks/dlurl";
 		String check = "https://raw.github.com/GetPerms/GetPerms/master/checks/ver";
@@ -264,26 +263,26 @@ public class GetPerms extends JavaPlugin{
 	}
 
 	public final void PST(IOException e){
-		if (cfg.getBoolean("debugMode", true))
-			if (cfg.getBoolean("silentMode", false))
+		if (cfg.getBoolean("debugMode", false))
+			if (!cfg.getBoolean("silentMode", false))
 				e.printStackTrace();
 	}
 
 	public final void PST(MalformedURLException e){
-		if (cfg.getBoolean("debugMode", true))
-			if (cfg.getBoolean("silentMode", false))
+		if (cfg.getBoolean("debugMode", false))
+			if (!cfg.getBoolean("silentMode", false))
 				e.printStackTrace();
 	}
 
 	public final void PST(FileNotFoundException e){
-		if (cfg.getBoolean("debugMode", true))
-			if (cfg.getBoolean("silentMode", false))
+		if (cfg.getBoolean("debugMode", false))
+			if (!cfg.getBoolean("silentMode", false))
 				e.printStackTrace();
 	}
 
 	public final void PST(AccessControlException e){
-		if (cfg.getBoolean("debugMode", true))
-			if (cfg.getBoolean("silentMode", false))
+		if (cfg.getBoolean("debugMode", false))
+			if (!cfg.getBoolean("silentMode", false))
 				e.printStackTrace();
 	}
 
@@ -356,7 +355,6 @@ public class GetPerms extends JavaPlugin{
 	}
 
 	private final void createCfg(){
-		cfg = getConfig();
 		cfg.options().copyDefaults(true);
 		saveConfig();
 	}
@@ -391,23 +389,20 @@ public class GetPerms extends JavaPlugin{
 		in.close();
 	}
 
-	public final void debug(String i){
-		Logger log = this.getLogger();
-		if (cfg.getBoolean("debugMode", true))
-			if (cfg.getBoolean("silentMode", false))
-				log.info("[Debug] " + i);
+	public void debug(String i){
+		if (GetPerms.cfg.getBoolean("debugMode", false))
+			if (!GetPerms.cfg.getBoolean("silentMode", false))
+				logger.info("[Debug] " + i);
 	}
 
-	public final void info(String i){
-		Logger log = this.getLogger();
-		if (cfg.getBoolean("silentMode", false))
-			log.info(i);
+	public void info(String i){
+		if (!GetPerms.cfg.getBoolean("silentMode", false))
+			logger.info(i);
 	}
 
-	public final void warn(String i){
-		Logger log = this.getLogger();
-		if (cfg.getBoolean("silentMode", false))
-			log.warning(i);
+	public void warn(String i){
+		if (!GetPerms.cfg.getBoolean("silentMode", false))
+			logger.warning(i);
 	}
 
 	/*
@@ -421,14 +416,13 @@ public class GetPerms extends JavaPlugin{
 	 */
 	@SuppressWarnings("unused")
 	private final void createMisc(){
-		Logger log = this.getLogger();
 		if (!new File(getDataFolder(), "plugins.yml").exists())
 			try{
 				getDataFolder().mkdir();
 				new File(getDataFolder(), "plugins.yml").createNewFile();
 			}catch (Exception e){
 				e.printStackTrace();
-				log.info("[GetPerms] Error occurred while creating plugins.yml (plugin list)!");
+				info("Error occurred while creating plugins.yml (plugin list)!");
 				getServer().getPluginManager().disablePlugin(this);
 				return;
 			}
