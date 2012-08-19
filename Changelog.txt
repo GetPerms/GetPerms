@@ -1,5 +1,11 @@
 Changelog:
 
+v1.1.5 (8/18/12)
+Added option in config to automatically regenerate permission files when a plugin is added/removed/updated
+Slight code formatting
+Slight code cleanup
+Minor changes
+
 v1.1.4 (5/10/12)
 Fixed missing console output messages (Issue 8)
 

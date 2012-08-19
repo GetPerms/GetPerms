@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 
@@ -13,7 +12,8 @@ public final class WriteToFile{
 
 	private GetPerms gp;
 	public List<Permission> plist;
-	private File file = new File("pluginlist.txt");
+	public File file = new File("plugins/GetPerms/pluginlist.txt");
+	public File file2 = new File("plugins/GetPerms/pluginlist2.txt");
 	private PrintWriter pw;
 
 	public WriteToFile(GetPerms gp){
@@ -38,7 +38,14 @@ public final class WriteToFile{
 	public final void WritePluginList() throws IOException{
 		pw = new PrintWriter(new FileWriter(file));
 		for (Plugin p : gp.pluginlist)
-			pw.println(p.getDescription().getName());
+			pw.println(p.getDescription().getName() + " - " + p.getDescription().getVersion());
+		pw.close();
+	}
+
+	public final void WriteTempPluginList() throws IOException{
+		pw = new PrintWriter(new FileWriter(file2));
+		for (Plugin p : gp.pluginlist)
+			pw.println(p.getDescription().getName() + " - " + p.getDescription().getVersion());
 		pw.close();
 	}
 

@@ -3,7 +3,9 @@ package com.github.GetPerms.GetPerms;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -14,7 +16,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessControlException;
 import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -45,6 +46,7 @@ public class GetPerms extends JavaPlugin{
 	public static Configuration cfg;
 	public Logger logger;
 	private boolean dlstate = true;
+	private boolean done = false;
 
 	@Override
 	public void onEnable(){
@@ -149,7 +151,6 @@ public class GetPerms extends JavaPlugin{
 					warn("Error downloading readme and changelog!");
 				}
 			}
-		// gpCreateMisc();
 		try{
 			pw1 = new PrintWriter(new FileWriter(file1));
 			pw2 = new PrintWriter(new FileWriter(file2));
@@ -163,6 +164,9 @@ public class GetPerms extends JavaPlugin{
 			info("Checking for updates...");
 			checkForUpdates();
 		}
+		if (cfg.getBoolean("regenerateOnPluginChange", true))
+			if (!compareV())
+				genFiles(true);
 		if (cfg.getBoolean("autoGen", true))
 			genFiles(true);
 		saveConfig();
@@ -231,12 +235,12 @@ public class GetPerms extends JavaPlugin{
 			if (fc == "true")
 				dv = true;
 			if (newer(gpversion, line, dv)){
-				info("Newest GetPerms version" + line + " is available.");
 				if (cfg.getBoolean("autoDownload", true)){
+					info("Newest GetPerms version" + line + " is available.");
 					if (!uf.exists())
 						uf.mkdir();
 					if (!devb)
-						info("Downloading latest recommended release...");
+						info("Downloading latest recommended build...");
 					else
 						info("Downloading latest developmental build...");
 					dlFile(u, updt);
@@ -274,6 +278,12 @@ public class GetPerms extends JavaPlugin{
 				e.printStackTrace();
 	}
 
+	public final void PST(Exception e){
+		if (cfg.getBoolean("debugMode", false))
+			if (!cfg.getBoolean("silentMode", false))
+				e.printStackTrace();
+	}
+
 	public final void PST(FileNotFoundException e){
 		if (cfg.getBoolean("debugMode", false))
 			if (!cfg.getBoolean("silentMode", false))
@@ -287,40 +297,40 @@ public class GetPerms extends JavaPlugin{
 	}
 
 	public final void genFiles(boolean a){
-		TempRetrieval tr = new TempRetrieval(this);
-		pluginlist = pm.getPlugins();
-		if (a){
+		//a is True if called by onEnable and False if called by command
+		if ((a && !done) || !a){
+			info("Generating files...");
+			TempRetrieval tr = new TempRetrieval(this);
+			pluginlist = pm.getPlugins();
 			debug("Retrieved plugin list!");
 			debug("Retrieving permission nodes...");
-		}
-		for (Plugin p : pluginlist){
-			try{
-				WTF.WritePNodes(p);
-			}catch (IOException e){
-				PST(e);
-				warn("Error retrieving plugin list!");
+			for (Plugin p : pluginlist){
+				try{
+					WTF.WritePNodes(p);
+				}catch (IOException e){
+					PST(e);
+					warn("Error retrieving plugin list!");
+				}
+				if (!WTF.plist.isEmpty())
+					pw2.println("");
 			}
-			if (!WTF.plist.isEmpty())
-				pw2.println("");
-		}
-		pw1.close();
-		pw2.close();
-		if (a){
+			pw1.close();
+			pw2.close();
 			info("Compiled permission nodes into 'pnodes.txt' and");
 			info("'pnodesfull.txt' in the server root folder.");
-		}
-		try{
-			WTF.WritePluginList();
-		}catch (IOException e){
-			PST(e);
-			warn("Error generating plugin list!");
-		}
-		try{
-			tr.Get();
-		}catch (MalformedURLException e){
-			PST(e);
-		}catch (IOException e){
-			PST(e);
+			try{
+				WTF.WritePluginList();
+			}catch (IOException e){
+				PST(e);
+				warn("Error generating plugin list!");
+			}
+			try{
+				tr.Get();
+			}catch (MalformedURLException e){
+				PST(e);
+			}catch (IOException e){
+				PST(e);
+			}
 		}
 	}
 
@@ -389,6 +399,44 @@ public class GetPerms extends JavaPlugin{
 		in.close();
 	}
 
+	public boolean compareV(){
+		boolean ok = true;
+		try{
+			WTF.WriteTempPluginList();
+			FileInputStream fstream = new FileInputStream(WTF.file);
+			FileInputStream fstream2 = new FileInputStream(WTF.file2);
+			DataInputStream in = new DataInputStream(fstream);
+			DataInputStream in2 = new DataInputStream(fstream2);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			BufferedReader br2 = new BufferedReader(new InputStreamReader(in2));
+			String line;
+			String line2;
+			//Read file line by line
+			while ((line = br.readLine()) != null){
+				while ((line2 = br2.readLine()) != null){
+					if (line != line2)
+						ok = false;
+				}
+			}
+			while ((line2 = br.readLine()) != null){
+				while ((line = br2.readLine()) != null){
+					if (line != line2)
+						ok = false;
+				}
+			}
+			//Close the input stream
+			in.close();
+			in2.close();
+			if (WTF.file2.exists())
+				WTF.file2.delete();
+		}catch (IOException e){
+			PST(e);
+		}catch (Exception e){
+			PST(e);
+		}
+		return ok;
+	}
+
 	public void debug(String i){
 		if (GetPerms.cfg.getBoolean("debugMode", false))
 			if (!GetPerms.cfg.getBoolean("silentMode", false))
@@ -421,7 +469,7 @@ public class GetPerms extends JavaPlugin{
 				getDataFolder().mkdir();
 				new File(getDataFolder(), "plugins.yml").createNewFile();
 			}catch (Exception e){
-				e.printStackTrace();
+				PST(e);
 				info("Error occurred while creating plugins.yml (plugin list)!");
 				getServer().getPluginManager().disablePlugin(this);
 				return;
