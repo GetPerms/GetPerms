@@ -1,5 +1,5 @@
 OFFICIAL RELEASE 2/16/12!
-Version Installed: 1.1.5
+Version Installed: 1.1.7 (5/6/2013)
 
 About: GetPerms is a plugin for Minecraft servers running Bukkit. This plugin will gather a list of all permission nodes for every plugin installed on the server and output the nodes to a file.
 
@@ -11,17 +11,21 @@ Installation:
 
 Usage:
   1. Start the server
-  2. Go into the server root directory
-  3. Open 'pnodes.txt'
+  2. Go into the server root directory (the folder with the server.properties and bukkit.yml)
+  3. Open 'pnodes.txt' and or 'pnodesfull.txt'
+
+Important:
+Plugin permission files are generated 20 seconds after GetPerms is loaded.
 
 Commands:
-  /getperms regen
-  /getpermsregen
-  /gp regen
-  /gpregen
+  All commands can be run with /gp as an alias as well
+  /getperms regen           (Re)generate the files containing the permission nodes lists
+  /getperms reload          Reload the configuration file for GetPerms
+  /getperms help            Displays a help message
 
 Permission Nodes:
   getperms.regen
+  getperms.reload
 
 pnodes.txt:
   Each line is one separate permission node. This file is useful if you want one to just copy and paste the nodes without having to highlight each line separately to avoid copying the description. A permission node's description is available in 'pnodesfull.txt' which is also in the server root directory.

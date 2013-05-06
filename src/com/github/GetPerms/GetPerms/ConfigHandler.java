@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Logger;
 import org.bukkit.configuration.Configuration;
 
 public class ConfigHandler{
@@ -13,35 +12,51 @@ public class ConfigHandler{
 	private static Configuration cfg;
 	private final File cfgf = new File("plugins/GetPerms/config.yml");
 	private PrintWriter pw;
-	private boolean firstRun;
-	private boolean sendStats;
-	private boolean silentMode;
-	private boolean autoGen;
-	private boolean regenerateOnPluginChange;
-	private boolean autoUpdate;
-	private boolean autoDownload;
-	private boolean debugMode;
-	private boolean disableOnFinish;
-	private String cfgV;
-	private boolean devBuilds;
+	public String cfgV;
+	public boolean firstRun;
+	public boolean sendStats;
+	public boolean silentMode;
+	public boolean autoGen;
+	public boolean regenerateOnPluginChange;
+	public boolean autoUpdate;
+	public boolean autoDownload;
+	public boolean disableOnFinish;
+	public boolean devBuilds;
+	public boolean debugMode;
 
 	public ConfigHandler(GetPerms gp){
 		this.gp = gp;
+		cfg = gp.getConfig();
+	}
+
+	public final void load(){
+		cfgV = cfg.getString("cfgV", gp.version);
+		firstRun = cfg.getBoolean("firstRun", true);
+		sendStats = cfg.getBoolean("sendStats", true);
+		silentMode = cfg.getBoolean("silentMode", false);
+		autoGen = cfg.getBoolean("autoGen", true);
+		regenerateOnPluginChange = cfg.getBoolean("regenerateOnPluginChange", true);
+		autoUpdate = cfg.getBoolean("autoUpdate", true);
+		autoDownload = cfg.getBoolean("autoDownload", true);
+		disableOnFinish = cfg.getBoolean("disableOnFinish", false);
+		devBuilds = cfg.getBoolean("devBuilds", false);
+		debugMode = cfg.getBoolean("debugMode", false);
+		save();
 	}
 
 	public final void addComments(){
-		Logger log = gp.getLogger();
 		gp.reloadConfig();
+		GetPerms.cfg = gp.getConfig();
 		cfg = gp.getConfig();
 
 		try{
 			pw = new PrintWriter(new FileWriter(cfgf));
 		}catch (IOException e){
 			gp.PST(e);
-			log.warning("Error adding comments to config.yml!");
+			gp.warn("Error adding comments to config.yml!");
 		}
 
-		cfgV = cfg.getString("cfgV", gp.gpversion);
+		cfgV = cfg.getString("cfgV", gp.version);
 		firstRun = cfg.getBoolean("firstRun", true);
 		sendStats = cfg.getBoolean("sendStats", true);
 		silentMode = cfg.getBoolean("silentMode", false);
@@ -96,17 +111,16 @@ public class ConfigHandler{
 		pw.close();
 	}
 
-	public final void restore(){
-		Logger log = gp.getLogger();
-		cfg = gp.getConfig();
+	@SuppressWarnings("unused")
+	private final void restore(){
 		try{
 			pw = new PrintWriter(new FileWriter(cfgf));
 		}catch (IOException e){
 			gp.PST(e);
-			log.warning("Error adding comments to config.yml!");
+			gp.warn("Error adding comments to config.yml!");
 		}
 
-		cfgV = gp.gpversion;
+		cfgV = gp.version;
 		firstRun = cfg.getBoolean("firstRun", false);
 		sendStats = cfg.getBoolean("sendStats", true);
 		silentMode = cfg.getBoolean("silentMode", false);
@@ -131,6 +145,19 @@ public class ConfigHandler{
 		pw.println("debugMode: " + debugMode);
 
 		pw.close();
+	}
+
+	public void save(){
+		gp.saveConfig();
+		GetPerms.cfg = gp.getConfig();
+		cfg = gp.getConfig();
+		addComments();
+	}
+
+	public void reload(){
+		gp.reloadConfig();
+		GetPerms.cfg = gp.getConfig();
+		cfg = gp.getConfig();
 	}
 
 }

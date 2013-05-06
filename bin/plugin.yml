@@ -1,22 +1,24 @@
 name: GetPerms
 author: Smiley43210
+description: Plugin to automatically generate files containing permission nodes for plugins installed on the server.
 main: com.github.GetPerms.GetPerms.GetPerms
-version: 1.1.5
+version: 1.1.7
 commands:
-  getpermsregen:
-    description: Regenerates the files listing the permission nodes.
-    usage: /<command>
-  gpregen:
-    description: Regenerates the files listing the permission nodes.
-    usage: /<command>
   getperms:
-    description: Regenerates the files listing the permission nodes.
-    usage: /<command> regen
+    description: Main plugin command.
+    usage: /<command> <regen|reload|help>
   gp:
-    description: Regenerates the files listing the permission nodes.
-    usage: /<command> regen
+    description: Main plugin command.
+    usage: /<command> <regen|reload|help>
 permissions:
   getperms.*:
-    description: Parent permission
+    description: Allows player access to all GetPerms commands.
+    children:
+      getperms.regen: true
+      getperms.reload: true
   getperms.regen:
     description: Allows player to regenerate permission node files.
+    default: op
+  getperms.regen:
+    description: Allows player to reload the config file.
+    default: op

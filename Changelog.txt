@@ -1,6 +1,20 @@
 Changelog:
 
-v1.1.5 (8/18/12)
+v1.1.7 (5/6/13)
+Refractored file generation
+Removed /gpregen and /getpermsregen commands
+Added /getperms reload and /getperms help (you can still use /gp)
+Re-did command help message
+Optimized code
+Official support for Bukkit 1.5.1-R0.2
+
+v1.1.6 (8/18/12)
+Fixed regeneration on plugin change
+Changed config handling
+Bug: firstRun remains true
+Bug: cfgV does not change
+
+v1.1.5 (8/18/12) --Broken--
 Added option in config to automatically regenerate permission files when a plugin is added/removed/updated
 Slight code formatting
 Slight code cleanup

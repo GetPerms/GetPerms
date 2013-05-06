@@ -8,10 +8,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessControlException;
@@ -28,34 +26,34 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class GetPerms extends JavaPlugin{
 
-	public String gpversion;
 	WriteToFile WTF;
-	ConfigHandler ConfHandler = new ConfigHandler(this);
+	ConfigHandler ConfHandler;
 	PluginManager pm = Bukkit.getServer().getPluginManager();
 	public Plugin[] pluginlist;
-	private final File file1 = new File("pnodes.txt");
-	private final File file2 = new File("pnodesfull.txt");
+	public String version;
+	final File file1 = new File("pnodes.txt");
+	final File file2 = new File("pnodesfull.txt");
 	private final File rm = new File("plugins/GetPerms/ReadMe.txt");
 	private final File cl = new File("plugins/GetPerms/Changelog.txt");
 	private final File uf = new File("update");
 	private final File gpdf = new File("plugins/GetPerms");
 	private final File updt = new File("update/GetPerms.jar");
-	public PrintWriter pw1;
-	public PrintWriter pw2;
 	public static PluginDescriptionFile pdf;
 	public static Configuration cfg;
 	public Logger logger;
 	private boolean dlstate = true;
-	private boolean done = false;
+	boolean done = false;
 
 	@Override
 	public void onEnable(){
+		this.saveDefaultConfig();
+		ConfHandler = new ConfigHandler(this);
 		GetPerms.cfg = getConfig();
 		GetPerms.pdf = getDescription();
 		this.logger = this.getLogger();
 		createCfg();
-		ConfHandler.restore();
-		gpversion = pdf.getVersion();
+		ConfHandler.reload();
+		version = pdf.getVersion();
 		debugValues();
 		WTF = new WriteToFile(this);
 		if (cfg.getBoolean("sendStats")){
@@ -63,8 +61,8 @@ public class GetPerms extends JavaPlugin{
 			if (cfg.getBoolean("firstRun", true))
 				info("Option to disable is in the config.");
 			try{
-				Metrics metrics = new Metrics();
-				metrics.beginMeasuringPlugin(this);
+				Metrics metrics = new Metrics(this);
+				metrics.start();
 			}catch (IOException e){
 				PST(e);
 			}
@@ -78,11 +76,11 @@ public class GetPerms extends JavaPlugin{
 			info("PEx was not detected; Permissions defaulting to op's.");
 		else
 			info("PEx detected! Using as permissions plugin!");
-		debug("CFG version: " + cfg.getString("cfgV") + " Plugin version: " + gpversion);
-		if (!cfg.getString("cfgV").equalsIgnoreCase(gpversion)){
+		debug("CFG version: " + cfg.getString("cfgV") + " Plugin version: " + version);
+		if (!cfg.getString("cfgV").equalsIgnoreCase(version)){
 			debug("Config version does not match jar version.");
 			try{
-				cfg.set("cfgV", gpversion);
+				cfg.set("cfgV", version);
 				debug("Config version changed to match jar version.");
 				getDataFolder().mkdir();
 				if (!gpdf.exists())
@@ -151,33 +149,38 @@ public class GetPerms extends JavaPlugin{
 					warn("Error downloading readme and changelog!");
 				}
 			}
-		try{
-			pw1 = new PrintWriter(new FileWriter(file1));
-			pw2 = new PrintWriter(new FileWriter(file2));
-		}catch (IOException e){
-			PST(e);
-		}
-		info("GetPerms " + gpversion + " enabled!");
+		ConfHandler.save();
+		ConfHandler.reload();
+		info("GetPerms " + version + " enabled!");
 		info("GetPerms is the work of Smiley43210, with the help of");
 		info("Tahkeh, wwsean08, desmin88, and many others. Thanks!");
 		if (cfg.getBoolean("autoUpdate", true)){
 			info("Checking for updates...");
 			checkForUpdates();
 		}
-		if (cfg.getBoolean("regenerateOnPluginChange", true))
+		if (cfg.getBoolean("regenerateOnPluginChange", true)){
+			debug("Checking for plugin changes...");
 			if (!compareV())
-				genFiles(true);
-		if (cfg.getBoolean("autoGen", true))
+				debug("Changes found! Regenerating files...");
 			genFiles(true);
-		saveConfig();
-		if (cfg.getBoolean("disableOnFinish", false))
+		}
+		if (cfg.getBoolean("autoGen", true)){
+			debug("AutoGen enabled");
+			genFiles(true);
+		}
+		if (cfg.getBoolean("disableOnFinish", false)){
+			debug("DisableOnFinish enabled");
+			info("Finished! Disabling...");
 			getServer().getPluginManager().disablePlugin(this);
+		}
 	}
 
 	@Override
 	public void onDisable(){
+		ConfHandler.reload();
+		ConfHandler.save();
 		ConfHandler.addComments();
-		info("GetPerms " + gpversion + " unloaded");
+		info("GetPerms " + version + " unloaded");
 	}
 
 	public final boolean usePEX(){
@@ -187,22 +190,29 @@ public class GetPerms extends JavaPlugin{
 	}
 
 	private final void debugValues(){
-		boolean firstRun = cfg.getBoolean("firstRun");
-		boolean autoGen = cfg.getBoolean("autoGen");
-		boolean autoUpdate = cfg.getBoolean("autoUpdate");
-		boolean autoDownload = cfg.getBoolean("autoDownload");
-		boolean debugMode = cfg.getBoolean("debugMode");
-		boolean disableOnFinish = cfg.getBoolean("disableOnFinish");
-		boolean devBuilds = cfg.getBoolean("devBuilds");
-		String cfgV = cfg.getString("cfgV");
-		debug("cfgV: \"" + cfgV + "\"");
-		debug("firstRun: " + firstRun);
-		debug("autoGen: " + autoGen);
-		debug("autoUpdate: " + autoUpdate);
-		debug("autoDownload: " + autoDownload);
-		debug("disableOnFinish: " + disableOnFinish);
-		debug("devBuilds: " + devBuilds);
-		debug("debugMode: " + debugMode);
+		String cfgV = version;
+		boolean firstRun = cfg.getBoolean("firstRun", false);
+		boolean sendStats = cfg.getBoolean("sendStats", true);
+		boolean silentMode = cfg.getBoolean("silentMode", false);
+		boolean autoGen = cfg.getBoolean("autoGen", true);
+		boolean regenerateOnPluginChange = cfg.getBoolean("regenerateOnPluginChange", true);
+		boolean autoUpdate = cfg.getBoolean("autoUpdate", true);
+		boolean autoDownload = cfg.getBoolean("autoDownload", true);
+		boolean disableOnFinish = cfg.getBoolean("disableOnFinish", false);
+		boolean devBuilds = cfg.getBoolean("devBuilds", false);
+		boolean debugMode = cfg.getBoolean("debugMode", false);
+
+		config("cfgV: \"" + cfgV + "\"");
+		config("firstRun: " + firstRun);
+		config("sendStats: " + sendStats);
+		config("silentMode: " + silentMode);
+		config("autoGen: " + autoGen);
+		config("regenerateOnPluginChange: " + regenerateOnPluginChange);
+		config("autoUpdate: " + autoUpdate);
+		config("autoDownload: " + autoDownload);
+		config("disableOnFinish: " + disableOnFinish);
+		config("devBuilds: " + devBuilds);
+		config("debugMode: " + debugMode);
 	}
 
 	private final void checkForUpdates(){
@@ -234,7 +244,7 @@ public class GetPerms extends JavaPlugin{
 			}
 			if (fc == "true")
 				dv = true;
-			if (newer(gpversion, line, dv)){
+			if (newer(version, line, dv)){
 				if (cfg.getBoolean("autoDownload", true)){
 					info("Newest GetPerms version" + line + " is available.");
 					if (!uf.exists())
@@ -270,6 +280,10 @@ public class GetPerms extends JavaPlugin{
 		if (cfg.getBoolean("debugMode", false))
 			if (!cfg.getBoolean("silentMode", false))
 				e.printStackTrace();
+		if (!cfg.getBoolean("silentMode", false)){
+			severe("An error has occurred. If this problem persists, enable debugMode in the config, restart the server, and");
+			severe("post a ticket with the stack trace, all GetPerms messages, and what you did before the error occured.");
+		}
 	}
 
 	public final void PST(MalformedURLException e){
@@ -282,55 +296,39 @@ public class GetPerms extends JavaPlugin{
 		if (cfg.getBoolean("debugMode", false))
 			if (!cfg.getBoolean("silentMode", false))
 				e.printStackTrace();
+		if (!cfg.getBoolean("silentMode", false)){
+			severe("An error has occurred. If this problem persists, enable debugMode in the config, restart the server, and");
+			severe("post a ticket with the stack trace, all GetPerms messages, and what you did before the error occured.");
+		}
 	}
 
 	public final void PST(FileNotFoundException e){
 		if (cfg.getBoolean("debugMode", false))
 			if (!cfg.getBoolean("silentMode", false))
 				e.printStackTrace();
+		if (!cfg.getBoolean("silentMode", false)){
+			severe("An error has occurred. If this problem persists, enable debugMode in the config, restart the server, and");
+			severe("post a ticket with the stack trace, all GetPerms messages, and what you did before the error occured.");
+		}
 	}
 
 	public final void PST(AccessControlException e){
 		if (cfg.getBoolean("debugMode", false))
 			if (!cfg.getBoolean("silentMode", false))
 				e.printStackTrace();
+		if (!cfg.getBoolean("silentMode", false)){
+			severe("An error has occurred. If this problem persists, enable debugMode in the config, restart the server, and");
+			severe("post a ticket with the stack trace, all GetPerms messages, and what you did before the error occured.");
+		}
 	}
 
 	public final void genFiles(boolean a){
 		//a is True if called by onEnable and False if called by command
 		if ((a && !done) || !a){
-			info("Generating files...");
-			TempRetrieval tr = new TempRetrieval(this);
-			pluginlist = pm.getPlugins();
-			debug("Retrieved plugin list!");
-			debug("Retrieving permission nodes...");
-			for (Plugin p : pluginlist){
-				try{
-					WTF.WritePNodes(p);
-				}catch (IOException e){
-					PST(e);
-					warn("Error retrieving plugin list!");
-				}
-				if (!WTF.plist.isEmpty())
-					pw2.println("");
-			}
-			pw1.close();
-			pw2.close();
-			info("Compiled permission nodes into 'pnodes.txt' and");
-			info("'pnodesfull.txt' in the server root folder.");
-			try{
-				WTF.WritePluginList();
-			}catch (IOException e){
-				PST(e);
-				warn("Error generating plugin list!");
-			}
-			try{
-				tr.Get();
-			}catch (MalformedURLException e){
-				PST(e);
-			}catch (IOException e){
-				PST(e);
-			}
+			// 20*20 = 20 seconds (20 ticks per second)
+			new PermissionFileGenerator(this).runTaskLater(this, 20 * 20);
+		}else if (!a){
+			new PermissionFileGenerator(this).run();
 		}
 	}
 
@@ -365,8 +363,11 @@ public class GetPerms extends JavaPlugin{
 	}
 
 	private final void createCfg(){
-		cfg.options().copyDefaults(true);
-		saveConfig();
+		/*if (!new File(getDataFolder(), "plugins.yml").exists())
+			cfg.options().copyDefaults(true);
+		ConfHandler.save();
+		*/
+		ConfHandler.load();
 	}
 
 	@Override
@@ -401,38 +402,42 @@ public class GetPerms extends JavaPlugin{
 
 	public boolean compareV(){
 		boolean ok = true;
-		try{
-			WTF.WriteTempPluginList();
-			FileInputStream fstream = new FileInputStream(WTF.file);
-			FileInputStream fstream2 = new FileInputStream(WTF.file2);
-			DataInputStream in = new DataInputStream(fstream);
-			DataInputStream in2 = new DataInputStream(fstream2);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			BufferedReader br2 = new BufferedReader(new InputStreamReader(in2));
-			String line;
-			String line2;
-			//Read file line by line
-			while ((line = br.readLine()) != null){
-				while ((line2 = br2.readLine()) != null){
-					if (line != line2)
-						ok = false;
+		if (WTF.file2.exists()){
+			pluginlist = pm.getPlugins();
+			try{
+				WTF.WriteTempPluginList();
+				FileInputStream fstream = new FileInputStream(WTF.file);
+				FileInputStream fstream2 = new FileInputStream(WTF.file2);
+				DataInputStream in = new DataInputStream(fstream);
+				DataInputStream in2 = new DataInputStream(fstream2);
+				BufferedReader br = new BufferedReader(new InputStreamReader(in));
+				BufferedReader br2 = new BufferedReader(new InputStreamReader(in2));
+				String line;
+				String line2;
+				//Read file line by line
+				while ((line = br.readLine()) != null && ok == true){
+					while ((line2 = br2.readLine()) != null && ok == true){
+						if (line != line2)
+							ok = false;
+					}
 				}
-			}
-			while ((line2 = br.readLine()) != null){
-				while ((line = br2.readLine()) != null){
-					if (line != line2)
-						ok = false;
+				while ((line2 = br.readLine()) != null && ok == true){
+					while ((line = br2.readLine()) != null && ok == true){
+						if (line != line2)
+							ok = false;
+					}
 				}
+				//Close the input stream
+				in.close();
+				in2.close();
+				debug("Attempting to delete temporary list");
+				if (!WTF.file2.delete())
+					warn("Temporary file deletion failed!");
+			}catch (IOException e){
+				PST(e);
+			}catch (Exception e){
+				PST(e);
 			}
-			//Close the input stream
-			in.close();
-			in2.close();
-			if (WTF.file2.exists())
-				WTF.file2.delete();
-		}catch (IOException e){
-			PST(e);
-		}catch (Exception e){
-			PST(e);
 		}
 		return ok;
 	}
@@ -443,6 +448,12 @@ public class GetPerms extends JavaPlugin{
 				logger.info("[Debug] " + i);
 	}
 
+	public void config(String i){
+		if (GetPerms.cfg.getBoolean("debugMode", false))
+			if (!GetPerms.cfg.getBoolean("silentMode", false))
+				logger.config("[Debug] " + i);
+	}
+
 	public void info(String i){
 		if (!GetPerms.cfg.getBoolean("silentMode", false))
 			logger.info(i);
@@ -451,6 +462,11 @@ public class GetPerms extends JavaPlugin{
 	public void warn(String i){
 		if (!GetPerms.cfg.getBoolean("silentMode", false))
 			logger.warning(i);
+	}
+
+	public void severe(String i){
+		if (!GetPerms.cfg.getBoolean("silentMode", false))
+			logger.severe(i);
 	}
 
 	/*
