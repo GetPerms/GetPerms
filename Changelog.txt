@@ -20,6 +20,7 @@ Added /getperms reload and /getperms help (you can still use /gp)
 Re-did command help message
 Optimized code
 Official support for Bukkit 1.5.1-R0.2
+ACTUALLY FIXED FileNotFoundException from v0.0.7
 
 v1.1.6 (8/18/12)
 Fixed regeneration on plugin change
