@@ -4,10 +4,12 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -42,7 +44,7 @@ public class GetPerms extends JavaPlugin{
 	public static Configuration cfg;
 	public Logger logger;
 	private boolean dlstate = true;
-	boolean done = false;
+	boolean genDone = false;
 
 	@Override
 	public void onEnable(){
@@ -71,7 +73,8 @@ public class GetPerms extends JavaPlugin{
 			if (cfg.getBoolean("firstRun", true))
 				info("Option to enable is in the config.");
 		}
-		info("This plugin supports PermissionsEx, which will be used if detected.");
+		if (cfg.getBoolean("firstRun", true))
+			info("This plugin supports PermissionsEx, which will be used if detected.");
 		if (!usePEX())
 			info("PEx was not detected; Permissions defaulting to op's.");
 		else
@@ -79,81 +82,19 @@ public class GetPerms extends JavaPlugin{
 		debug("CFG version: " + cfg.getString("cfgV") + " Plugin version: " + version);
 		if (!cfg.getString("cfgV").equalsIgnoreCase(version)){
 			debug("Config version does not match jar version.");
-			try{
-				cfg.set("cfgV", version);
-				debug("Config version changed to match jar version.");
-				getDataFolder().mkdir();
-				if (!gpdf.exists())
-					gpdf.mkdir();
-				info("Downloading changelog and readme...");
-				dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
-				dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
-				info("The changelog and readme can be found in 'plugins/GetPerms/'");
-				dlstate = false;
-				debug("Downloads succeded; M1. firstRun being set to false...");
-				cfg.set("firstRun", false);
-			}catch (MalformedURLException e){
-				debug("MalformedURLException thrown, setting firstRun to true...");
-				cfg.set("firstRun", true);
-				PST(e);
-				warn("Error downloading readme and changelog!");
-				dlstate = false;
-			}catch (FileNotFoundException e){
-				debug("FileNotFoundException thrown, setting firstRun to true...");
-				cfg.set("firstRun", true);
-				PST(e);
-				warn("Error downloading readme and changelog!");
-				info("The readme is available at");
-				info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
-				info("and the changelog is available at");
-				info("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt");
-				dlstate = false;
-			}catch (IOException e){
-				debug("IOException thrown, setting firstRun to true...");
-				cfg.set("firstRun", true);
-				PST(e);
-				warn("Error downloading readme and changelog!");
-				dlstate = false;
-			}
+			getStartFilesFromVer();
 		}
 		if (dlstate)
 			if (cfg.getBoolean("firstRun", true)){
 				debug("firstRun is set to true. Setting to false...");
 				cfg.set("firstRun", false);
-				try{
-					getDataFolder().mkdir();
-					info("Downloading changelog and readme...");
-					dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
-					dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
-					info("The changelog and readme can be found in 'plugins/GetPerms/'");
-					debug("Downloads succeded; M2.");
-					dlstate = false;
-				}catch (MalformedURLException e){
-					debug("MalformedURLException thrown, setting firstRun to true...");
-					cfg.set("firstRun", true);
-					PST(e);
-					warn("Error downloading readme and changelog!");
-				}catch (FileNotFoundException e){
-					debug("FileNotFoundException thrown, setting firstRun to true...");
-					cfg.set("firstRun", true);
-					PST(e);
-					warn("Error downloading readme and changelog!");
-					info("The readme is available at");
-					info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
-					info("and the changelog is available at");
-					info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
-				}catch (IOException e){
-					debug("IOException thrown, setting firstRun to true...");
-					cfg.set("firstRun", true);
-					PST(e);
-					warn("Error downloading readme and changelog!");
-				}
+				getStartFiles();
 			}
 		ConfHandler.save();
 		ConfHandler.reload();
 		info("GetPerms " + version + " enabled!");
-		info("GetPerms is the work of Smiley43210, with the help of");
-		info("Tahkeh, wwsean08, desmin88, and many others. Thanks!");
+		info("GetPerms is the work of Smiley43210, with the help of Tahkeh,");
+		info("wwsean08, desmin88, and many others. Thanks!");
 		if (cfg.getBoolean("autoUpdate", true)){
 			info("Checking for updates...");
 			checkForUpdates();
@@ -163,10 +104,12 @@ public class GetPerms extends JavaPlugin{
 			if (!compareV())
 				debug("Changes found! Regenerating files...");
 			genFiles(true);
+			genDone = true;
 		}
 		if (cfg.getBoolean("autoGen", true)){
 			debug("AutoGen enabled");
 			genFiles(true);
+			genDone = true;
 		}
 		if (cfg.getBoolean("disableOnFinish", false)){
 			debug("DisableOnFinish enabled");
@@ -180,7 +123,7 @@ public class GetPerms extends JavaPlugin{
 		ConfHandler.reload();
 		ConfHandler.save();
 		ConfHandler.addComments();
-		info("GetPerms " + version + " unloaded");
+		info("GetPerms disabled");
 	}
 
 	public final boolean usePEX(){
@@ -253,9 +196,13 @@ public class GetPerms extends JavaPlugin{
 						info("Downloading latest recommended build...");
 					else
 						info("Downloading latest developmental build...");
-					dlFile(u, updt);
-					info("Newest version of GetPerms is located in");
-					info("'server_root_dir/update/GetPerms.jar'.");
+					if (dlUpdate(u, updt)){
+						info("Newest version of GetPerms is located in");
+						info("'server_root_dir/update/GetPerms.jar'.");
+					}else{
+						warn("Update file is corrupt! (Contains HTML elements)");
+						warn("The update will most likely be available a little later.");
+					}
 				}else{
 					info("Newest GetPerms version" + line + " is available for download, you can");
 					info("get it at " + u);
@@ -324,7 +271,7 @@ public class GetPerms extends JavaPlugin{
 
 	public final void genFiles(boolean a){
 		//a is True if called by onEnable and False if called by command
-		if ((a && !done) || !a){
+		if ((a && !genDone) || !a){
 			// 20*20 = 20 seconds (20 ticks per second)
 			new PermissionFileGenerator(this).runTaskLater(this, 20 * 20);
 		}else if (!a){
@@ -388,6 +335,79 @@ public class GetPerms extends JavaPlugin{
 
 	}
 	 */
+
+	// Gets the readme and changelog
+	private void getStartFiles(){
+		try{
+			getDataFolder().mkdir();
+			info("Downloading changelog and readme...");
+			dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
+			dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
+			info("The changelog and readme can be found in 'plugins/GetPerms/'");
+			debug("Downloads succeded; M2.");
+			dlstate = false;
+		}catch (MalformedURLException e){
+			debug("MalformedURLException thrown, setting firstRun to true...");
+			cfg.set("firstRun", true);
+			PST(e);
+			warn("Error downloading readme and changelog!");
+		}catch (FileNotFoundException e){
+			debug("FileNotFoundException thrown, setting firstRun to true...");
+			cfg.set("firstRun", true);
+			PST(e);
+			warn("Error downloading readme and changelog!");
+			info("The readme is available at");
+			info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
+			info("and the changelog is available at");
+			info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
+		}catch (IOException e){
+			debug("IOException thrown, setting firstRun to true...");
+			cfg.set("firstRun", true);
+			PST(e);
+			warn("Error downloading readme and changelog!");
+		}
+	}
+
+	// Gets readme and changelog, but code differs since this is called when the config verison does not match plugin version
+	private void getStartFilesFromVer(){
+		try{
+			cfg.set("cfgV", version);
+			debug("Config version changed to match jar version.");
+			getDataFolder().mkdir();
+			if (!gpdf.exists())
+				gpdf.mkdir();
+			info("Downloading changelog and readme...");
+			dlFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", cl);
+			dlFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", rm);
+			info("The changelog and readme can be found in 'plugins/GetPerms/'");
+			dlstate = false;
+			debug("Downloads succeded; M1. firstRun being set to false...");
+			cfg.set("firstRun", false);
+		}catch (MalformedURLException e){
+			debug("MalformedURLException thrown, setting firstRun to true...");
+			cfg.set("firstRun", true);
+			PST(e);
+			warn("Error downloading readme and changelog!");
+			dlstate = false;
+		}catch (FileNotFoundException e){
+			debug("FileNotFoundException thrown, setting firstRun to true...");
+			cfg.set("firstRun", true);
+			PST(e);
+			warn("Error downloading readme and changelog!");
+			info("The readme is available at");
+			info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
+			info("and the changelog is available at");
+			info("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt");
+			dlstate = false;
+		}catch (IOException e){
+			debug("IOException thrown, setting firstRun to true...");
+			cfg.set("firstRun", true);
+			PST(e);
+			warn("Error downloading readme and changelog!");
+			dlstate = false;
+		}
+	}
+
 	public static void dlFile(String url, File file) throws MalformedURLException, IOException{
 		BufferedInputStream in = new BufferedInputStream(new java.net.URL(url).openStream());
 		FileOutputStream fos = new FileOutputStream(file);
@@ -398,6 +418,48 @@ public class GetPerms extends JavaPlugin{
 			bout.write(data, 0, x);
 		bout.close();
 		in.close();
+	}
+
+	private boolean dlUpdate(String url, File file) throws MalformedURLException, IOException{
+		BufferedInputStream in = new BufferedInputStream(new java.net.URL(url).openStream());
+		File fileTemp = new File("update/GPtemp.jar");
+		FileOutputStream fos = new FileOutputStream(fileTemp);
+		BufferedOutputStream bout = new BufferedOutputStream(fos, 1024);
+		byte[] data = new byte[1024];
+		int x = 0;
+		while ((x = in.read(data, 0, 1024)) >= 0)
+			bout.write(data, 0, x);
+		bout.close();
+		in.close();
+		if (verifyDownload(fileTemp)){
+			fileTemp.renameTo(file);
+			return true;
+		}
+		fileTemp.delete();
+		File dirTemp = new File("update/");
+		dirTemp.delete();
+		return false;
+	}
+
+	private boolean verifyDownload(File file){
+		try{
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			String line;
+			while ((line = reader.readLine()) != null){
+				if (line.contains("content=\"text/html;charset=utf-8\""))
+					return false;
+				else if (line.contains("html lang=\"en\""))
+					return false;
+				else if (line.contains("<html>"))
+					return false;
+			}
+		}catch (EOFException ignored){
+		}catch (FileNotFoundException e){
+			PST(e);
+		}catch (IOException e){
+			PST(e);
+		}
+		return true;
 	}
 
 	public boolean compareV(){

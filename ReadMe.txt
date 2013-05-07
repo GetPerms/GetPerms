@@ -1,5 +1,5 @@
 OFFICIAL RELEASE 2/16/12!
-Version Installed: 1.1.7 (5/6/2013)
+Version Installed: 1.1.9 (5/6/2013)
 
 About: GetPerms is a plugin for Minecraft servers running Bukkit. This plugin will gather a list of all permission nodes for every plugin installed on the server and output the nodes to a file.
 
@@ -21,14 +21,22 @@ Commands:
   All commands can be run with /gp as an alias as well
   /getperms regen           (Re)generate the files containing the permission nodes lists
   /getperms reload          Reload the configuration file for GetPerms
-  /getperms help            Displays a help message
+  /getperms help            Lists the commands
 
 Permission Nodes:
-  getperms.regen
-  getperms.reload
+  getperms.regen            Allows player to regenerate permission node files
+  getperms.reload           Allows player to reload the GetPerms config file
+
+---------------FILES---------------
 
 pnodes.txt:
   Each line is one separate permission node. This file is useful if you want one to just copy and paste the nodes without having to highlight each line separately to avoid copying the description. A permission node's description is available in 'pnodesfull.txt' which is also in the server root directory.
 
 pnodesfull.txt
-  Quite the same as pnodes.txt, except this one has the description next to each node. Permission nodes are listed in  separate groups (a group for each plugin). 
+  Quite the same as pnodes.txt, except this one has the description next to each node. Permission nodes are listed in  separate groups (a group for each plugin).
+
+[Plugin name]pnodes.txt
+  This is the same thing as pnodes.txt, except for a specific plugin. These are usually generated when a plugin doesn't specify all of its permission nodes in its plugin.yml, such as Essentials.
+
+[Plugin name]pnodesfull.txt
+  This is the same thing as pnodesfull.txt, except for a specific plugin. These are usually generated when a plugin doesn't specify all of its permission nodes in its plugin.yml, such as Essentials.

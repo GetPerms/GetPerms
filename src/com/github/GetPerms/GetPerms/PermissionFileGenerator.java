@@ -21,7 +21,6 @@ public class PermissionFileGenerator extends BukkitRunnable{
 
 	@Override
 	public void run(){
-		//a is True if called by onEnable and False if called by command
 		try{
 			pw1 = new PrintWriter(new FileWriter(gp.file1));
 			pw2 = new PrintWriter(new FileWriter(gp.file2));
@@ -61,6 +60,7 @@ public class PermissionFileGenerator extends BukkitRunnable{
 		}catch (IOException e){
 			gp.PST(e);
 		}
+		gp.info("Permission lists generated!");
 	}
 
 }

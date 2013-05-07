@@ -1,5 +1,18 @@
 Changelog:
 
+v1.1.9 (5/6/13)
+Added update download validity checker (checks for HTML elements in file, if found, invalid)
+
+v1.1.8 (5/6/13)
+Added check to prevent double file generation at startup
+Re-worded configuration file key descriptions
+Moved redundant code to separate methods (changelog and readme downloaders)
+New shiny command messages (for /getperms and /getperms help)
+Moved redundant code to new class (command usage generator)
+Changed one console message to be a one-time message only (less server message spam!)
+Slightly modified command handling
+Forgot to rename a permission node in plugin.yml (from copy and paste)
+
 v1.1.7 (5/6/13)
 Refractored file generation
 Removed /gpregen and /getpermsregen commands

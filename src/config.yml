@@ -1,13 +1,14 @@
-#GetPerms config
+#GetPerms config file.
 
-#Config version. DO NOT CHANGE! Changing may cause undesirable results!
-cfgV_info: "#Config version. DO NOT CHANGE! Changing may cause undesirable results!"
-cfgV: "1.1.7"
+#Config version. Don't change it! Changing may cause undesirable results!
+cfgV_info: "Config version. Don't change it! Changing may cause undesirable results!"
+cfgV: "1.1.9"
 
 #Is it the first run?
-#DO NOT CHANGE! Even if it's still true after you run it, don't change it.
-#Used to manage certain actions at startup.
-info_firstRun: "Do not change. Even if it's still true after you run it, don't change it. Used to manage certain actions at startup."
+#Don't change it! Sometimes, it stays true even though it's not the first startup. This is
+#normal. However, if you want to see one-time messages, set it to true. This manages certain
+#messages and actions at startup.
+info_firstRun: "Is it the first run? Don't change it! Sometimes, it stays true even though it's not the first startup. This is normal. However, if you want to see one-time messages, set it to true. This manages certainmessages and actions at startup."
 firstRun: true
 
 #Should this plugin send usage stats to metrics.griefcraft.com every 10 minutes?
@@ -19,20 +20,22 @@ sendStats: true
 info_silentMode: "false"
 silentMode: false
 
-#Weather or not to automatically generate the permissions files on startup.
-info_autoGen: "Weather or not to automatically generate the permissions files on startup"
+#Weather or not to automatically generate the permissions files on startup. Please note that the
+#files will only generate 20 seconds after this plugin loads.
+info_autoGen: "Weather or not to automatically generate the permissions files on startup. Please note that the files will only generate 20 seconds after this plugin loads."
 autoGen: true
 
 #When true, if any plugin is removed, added, or updated, the permission files will be regenerated.
 info_regenerateOnPluginChange: "When true, if any plugin is removed, added, or updated, the permission files will be regenerated"
 regenerateOnPluginChange: true
 
-#Weather or not to check for updates.
-info_autoUpdate: "Weather or not to check for updates"
+#Weather or not to check for updates. If autoDownload is disabled, you will still get a message
+#about available updates in the server console.
+info_autoUpdate: "Weather or not to check for updates. If autoDownload is disabled, you will still get a message about available updates in the server console."
 autoUpdate: true
 
-#Should the newest GetPerms.jar be downloaded?
-info_autoDownload: "Should it automatically download the newest GetPerms.jar?"
+#Should GetPerms updates be downloaded? Has no effect unless autoUpdate is enabled.
+info_autoDownload: "Should GetPerms updates be downloaded? Has no effect unless autoUpdate is enabled."
 autoDownload: true
 
 #Disable the plugin once it finishes?
@@ -44,6 +47,7 @@ disableOnFinish: false
 info_devBuilds: "Download the latest dev build? May have bugs and errors."
 devBuilds: false
 
-#Debug if needed for errors/bugs/info.
-info_debugMode: "Debug if needed for errors/bugs/info."
+#Debug if needed for errors/bugs/info. Please enable it if anything seems to go wrong, or if
+#you suspect something is happening that shouldn't be.
+info_debugMode: "Debug if needed for errors/bugs/info. Please enable it if anything seems to go wrong, or if you suspect something is happening that shouldn't be."
 debugMode: false

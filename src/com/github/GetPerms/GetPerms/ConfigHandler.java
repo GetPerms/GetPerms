@@ -70,12 +70,13 @@ public class ConfigHandler{
 
 		pw.println("#GetPerms config file.");
 		pw.println("");
-		pw.println("#Config version. DO NOT CHANGE! Changing may cause undesirable results!");
+		pw.println("#Config version. Don't change it! Changing may cause undesirable results!");
 		pw.println("cfgV: \"" + cfgV + "\"");
 		pw.println("");
 		pw.println("#Is it the first run?");
-		pw.println("#DO NOT CHANGE! Even if it's still true after you run it, don't change it.");
-		pw.println("#Used to manage certain actions at startup.");
+		pw.println("#Don't change it! Sometimes, it stays true even though it's not the first startup. This is");
+		pw.println("#normal. However, if you want to see one-time messages, set it to true. This manages certain");
+		pw.println("#messages and actions at startup.");
 		pw.println("firstRun: " + firstRun);
 		pw.println("");
 		pw.println("#Should the plugin send usage stats to metrics.griefcraft.com?");
@@ -85,16 +86,18 @@ public class ConfigHandler{
 		pw.println("#debug messages even if debug is enabled. Will still display 'GetPerms vX.X.X enabled!'");
 		pw.println("silentMode: " + silentMode);
 		pw.println("");
-		pw.println("#Weather or not to automatically generate the permissions files on startup.");
+		pw.println("#Weather or not to automatically generate the permissions files on startup. Please note that the");
+		pw.println("#files will only generate 20 seconds after this plugin loads.");
 		pw.println("autoGen: " + autoGen);
 		pw.println("");
 		pw.println("#When true, if any plugin is removed, added, or updated, the permission files will be regenerated.");
 		pw.println("regenerateOnPluginChange: " + regenerateOnPluginChange);
 		pw.println("");
-		pw.println("#Weather or not to check for updates.");
+		pw.println("#Weather or not to check for updates. If autoDownload is disabled, you will still get a message");
+		pw.println("#about available updates in the server console.");
 		pw.println("autoUpdate: " + autoUpdate);
 		pw.println("");
-		pw.println("#Should the newest GetPerms.jar be downloaded?");
+		pw.println("#Should GetPerms updates be downloaded? Has no effect unless autoUpdate is enabled.");
 		pw.println("autoDownload: " + autoDownload);
 		pw.println("");
 		pw.println("#Disable the plugin once it finishes?");
@@ -102,10 +105,11 @@ public class ConfigHandler{
 		pw.println("disableOnFinish: " + disableOnFinish);
 		pw.println("");
 		pw.println("#Download the latest dev build? May have bugs and errors.");
-		pw.println("#If set to false, will only download the latest recommended build.");
+		pw.println("#If set to false, will only check for the latest recommended build.");
 		pw.println("devBuilds: " + devBuilds);
 		pw.println("");
-		pw.println("#Debug if needed for errors/bugs/info.");
+		pw.println("#Debug if needed for errors/bugs/info. Please enable it if anything seems to go wrong, or if");
+		pw.println("#you suspect something is happening that shouldn't be.");
 		pw.println("debugMode: " + debugMode);
 
 		pw.close();
