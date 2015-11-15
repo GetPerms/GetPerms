@@ -7,57 +7,58 @@ import java.net.MalformedURLException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class PermissionFileGenerator extends BukkitRunnable{
+public class PermissionFileGenerator extends BukkitRunnable {
 
-	private GetPerms gp;
+	private Main gp;
 	WriteToFile WTF;
 	private PrintWriter pw1;
 	private PrintWriter pw2;
 
-	public PermissionFileGenerator(GetPerms gp){
+	public PermissionFileGenerator(Main gp) {
 		this.gp = gp;
-		WTF = gp.WTF;
+		WTF = gp.writeToFile;
 	}
 
 	@Override
-	public void run(){
-		try{
+	public void run() {
+		try {
 			pw1 = new PrintWriter(new FileWriter(gp.file1));
 			pw2 = new PrintWriter(new FileWriter(gp.file2));
-		}catch (IOException e){
+		} catch (IOException e) {
 			gp.PST(e);
 		}
 
 		gp.info("Generating files...");
 		TempRetrieval tr = new TempRetrieval(gp);
-		gp.pluginlist = gp.pm.getPlugins();
+		gp.pluginlist = gp.pluginManager.getPlugins();
 		gp.debug("Retrieved plugin list!");
 		gp.debug("Retrieving permission nodes...");
-		for (Plugin p : gp.pluginlist){
-			try{
+		for (Plugin p : gp.pluginlist) {
+			try {
 				WTF.WritePNodes(p, pw1, pw2);
-			}catch (IOException e){
+			} catch (IOException e) {
 				gp.PST(e);
 				gp.warn("Error retrieving plugin list!");
 			}
-			if (!WTF.plist.isEmpty())
+			if (!WTF.plist.isEmpty()) {
 				pw2.println("");
+			}
 		}
 		pw1.close();
 		pw2.close();
 		gp.info("Compiled permission nodes into 'pnodes.txt' and");
 		gp.info("'pnodesfull.txt' in the server root folder.");
-		try{
+		try {
 			WTF.WritePluginList();
-		}catch (IOException e){
+		} catch (IOException e) {
 			gp.PST(e);
 			gp.warn("Error generating plugin list!");
 		}
-		try{
+		try {
 			tr.Get();
-		}catch (MalformedURLException e){
+		} catch (MalformedURLException e) {
 			gp.PST(e);
-		}catch (IOException e){
+		} catch (IOException e) {
 			gp.PST(e);
 		}
 		gp.info("Permission lists generated!");

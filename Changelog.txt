@@ -1,5 +1,8 @@
 Changelog:
 
+v1.1.10 (11/14/15)
+Cleaned up and code and slightly changed coding style/convention
+
 v1.1.9 (5/6/13)
 Added update download validity checker (checks for HTML elements in file, if found, invalid)
 
