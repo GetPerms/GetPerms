@@ -6,18 +6,18 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class retrievePluginNodes {
+public class RetrievePluginNodes {
 
-	GetPerms gp;
+	Main gp;
 	String dbEntryCheck = "https://raw.github.com/GetPerms/GetPerms/master/db/entries";
 	URL dbEntryChecks;
 
-	public retrievePluginNodes(GetPerms gp){
+	public RetrievePluginNodes(Main gp) {
 		this.gp = gp;
 	}
 
 	@SuppressWarnings("unused")
-	public final void getDatabasePlugins(){
+	public final void getDatabasePlugins() {
 		String list = "";
 		try {
 			dbEntryChecks = new URL(dbEntryCheck);
@@ -29,6 +29,5 @@ public class retrievePluginNodes {
 			gp.PST(e);
 		}
 	}
-
 
 }
