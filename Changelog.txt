@@ -1,5 +1,8 @@
 Changelog:
 
+v1.1.11 (11/23/15)
+Updated metrics from R6 to R7
+
 v1.1.10 (11/14/15)
 Cleaned up and code and slightly changed coding style/convention
 
