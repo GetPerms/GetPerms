@@ -1,6 +1,6 @@
 Changelog:
 
-v1.1.12 (11/23/15)
+v1.1.12 (11/24/15)
 Cleaned up a lot more code
 Reduced redundant code
 Reduced console output message count
