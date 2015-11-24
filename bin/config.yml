@@ -2,7 +2,7 @@
 
 #Config version. Don't change it! Changing may cause undesirable results!
 cfgV_info: "Config version. Don't change it! Changing may cause undesirable results!"
-cfgV: "1.1.12"
+cfgV: "1.1.13"
 
 #Is it the first run?
 #Don't change it! Sometimes, it stays true even though it's not the first startup. This is

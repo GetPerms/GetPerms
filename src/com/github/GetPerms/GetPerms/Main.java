@@ -194,7 +194,7 @@ public class Main extends JavaPlugin {
 						info("Downloading latest developmental build...");
 					}
 
-					updateDownloadFile.mkdirs();
+					updateFolder.mkdirs();
 
 					if (downloadUpdate(u, updateDownloadFile)) {
 						info("Newest version of GetPerms is located in");
@@ -409,6 +409,8 @@ public class Main extends JavaPlugin {
 		for (Plugin plugin : pluginList) {
 			pluginListConfiguration.set(plugin.getDescription().getName(), plugin.getDescription().getVersion());
 		}
+
+		pluginListHandler.save();
 	}
 
 	public void debug(String i) {
@@ -450,7 +452,7 @@ public class Main extends JavaPlugin {
 
 		File[] oldFileList = {new File(dataFolder, "pluginlist.txt"), new File("pnodes.txt"),
 				new File("pnodesfull.txt"), new File("EssentialsPnodes.txt"), new File("EssentialsPnodesfull.txt"),
-				new File("update/GetPerms.jar")};
+				new File("update/GetPerms.jar"), new File("update/GPtemp.jar")};
 		File[] oldSoftDirectoryList = {new File("update")};
 
 		for (File file : oldFileList) {

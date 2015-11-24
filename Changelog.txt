@@ -1,5 +1,9 @@
 Changelog:
 
+v1.1.13 (11/24/15)
+Fixed plugins.yml not saving
+Added another file to cleanup
+
 v1.1.12 (11/24/15)
 Cleaned up a lot more code
 Reduced redundant code
