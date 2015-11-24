@@ -8,25 +8,25 @@ import java.net.URL;
 
 public class RetrievePluginNodes {
 
-	Main gp;
-	String dbEntryCheck = "https://raw.github.com/GetPerms/GetPerms/master/db/entries";
-	URL dbEntryChecks;
+	Main plugin;
+	String databaseEntryCheck = "https://raw.github.com/GetPerms/GetPerms/master/db/entries";
+	URL databaseEntryChecks;
 
-	public RetrievePluginNodes(Main gp) {
-		this.gp = gp;
+	public RetrievePluginNodes(Main plugin) {
+		this.plugin = plugin;
 	}
 
-	@SuppressWarnings("unused")
 	public final void getDatabasePlugins() {
+		@SuppressWarnings("unused")
 		String list = "";
 		try {
-			dbEntryChecks = new URL(dbEntryCheck);
-			BufferedReader r = new BufferedReader(new InputStreamReader(dbEntryChecks.openStream()));
-			list = r.readLine();
+			databaseEntryChecks = new URL(databaseEntryCheck);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(databaseEntryChecks.openStream()));
+			list = reader.readLine();
 		} catch (MalformedURLException e) {
-			gp.PST(e);
+			plugin.printStackTrace(e);
 		} catch (IOException e) {
-			gp.PST(e);
+			plugin.printStackTrace(e);
 		}
 	}
 

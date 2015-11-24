@@ -7,21 +7,21 @@ import org.bukkit.Bukkit;
 
 public class TempRetrieval {
 
-	private Main gp;
-	private File epnf = new File("EssentialsPnodesfull.txt");
-	private File epn = new File("EssentialsPnodes.txt");
+	private Main plugin;
+	private File permissionsFile = new File("Essentials_permission_nodes_desc.txt");
+	private File permissionsDescriptionsFile = new File("Essentials_permission_nodes.txt");
 
-	public TempRetrieval(Main gp) {
-		this.gp = gp;
+	public TempRetrieval(Main plugin) {
+		this.plugin = plugin;
 	}
 
 	public void Get() throws MalformedURLException, IOException {
 		if (Bukkit.getServer().getPluginManager().isPluginEnabled("Essentials")) {
-			gp.debug("Downloading Essentials node lists...");
-			Main.dlFile("https://raw.github.com/GetPerms/GetPerms/master/db/Essentials/pnodesfull.txt", epnf);
-			Main.dlFile("https://raw.github.com/GetPerms/GetPerms/master/db/Essentials/pnodes.txt", epn);
-			gp.info("Downloaded Essentials plugin node lists to");
-			gp.info("EssentialsPnodes.txt and EssentialsPnodesfull.txt");
+			plugin.debug("Downloading Essentials node lists...");
+			Main.downloadFile("https://raw.github.com/GetPerms/GetPerms/master/db/Essentials/pnodesfull.txt", permissionsFile);
+			Main.downloadFile("https://raw.github.com/GetPerms/GetPerms/master/db/Essentials/pnodes.txt", permissionsDescriptionsFile);
+			plugin.info("Downloaded Essentials plugin node lists to");
+			plugin.info("EssentialsPnodes.txt and EssentialsPnodesfull.txt");
 		}
 	}
 }

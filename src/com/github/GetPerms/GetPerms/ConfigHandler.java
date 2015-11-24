@@ -12,16 +12,16 @@ public class ConfigHandler {
 	private static Configuration cfg;
 	private final File cfgf = new File("plugins/GetPerms/config.yml");
 	public String cfgV;
-	public boolean firstRun;
-	public boolean sendStats;
-	public boolean silentMode;
-	public boolean autoGen;
-	public boolean regenerateOnPluginChange;
-	public boolean autoUpdate;
-	public boolean autoDownload;
-	public boolean disableOnFinish;
-	public boolean devBuilds;
-	public boolean debugMode;
+	private boolean firstRun;
+	private boolean sendStats;
+	private boolean silentMode;
+	private boolean autoGenerate;
+	private boolean regenerateOnPluginChange;
+	private boolean autoUpdate;
+	private boolean autoDownload;
+	private boolean disableOnFinish;
+	private boolean devBuilds;
+	private boolean debugMode;
 
 	public ConfigHandler(Main plugin) {
 		this.plugin = plugin;
@@ -29,11 +29,18 @@ public class ConfigHandler {
 	}
 
 	public final void load() {
+		plugin.reloadConfig();
+		plugin.configuration = plugin.getConfig();
+		plugin.configuration.options().copyDefaults(true);
+		plugin.saveConfig();
+
+		cfg = plugin.configuration;
+
 		cfgV = cfg.getString("cfgV", plugin.pluginVersion);
 		firstRun = cfg.getBoolean("firstRun", true);
 		sendStats = cfg.getBoolean("sendStats", true);
 		silentMode = cfg.getBoolean("silentMode", false);
-		autoGen = cfg.getBoolean("autoGen", true);
+		autoGenerate = cfg.getBoolean("autoGenerate", true);
 		regenerateOnPluginChange = cfg.getBoolean("regenerateOnPluginChange", true);
 		autoUpdate = cfg.getBoolean("autoUpdate", true);
 		autoDownload = cfg.getBoolean("autoDownload", true);
@@ -44,16 +51,12 @@ public class ConfigHandler {
 	}
 
 	public final void addComments() {
-		plugin.reloadConfig();
-		Main.configuration = plugin.getConfig();
-		cfg = plugin.getConfig();
-
 		PrintWriter printWriter;
 
 		try {
 			printWriter = new PrintWriter(new FileWriter(cfgf));
 		} catch (IOException e) {
-			plugin.PST(e);
+			plugin.printStackTrace(e);
 			plugin.warn("Error adding comments to config.yml!");
 			return;
 		}
@@ -62,7 +65,7 @@ public class ConfigHandler {
 		firstRun = cfg.getBoolean("firstRun", true);
 		sendStats = cfg.getBoolean("sendStats", true);
 		silentMode = cfg.getBoolean("silentMode", false);
-		autoGen = cfg.getBoolean("autoGen", true);
+		autoGenerate = cfg.getBoolean("autoGenerate", true);
 		regenerateOnPluginChange = cfg.getBoolean("regenerateOnPluginChange", true);
 		autoUpdate = cfg.getBoolean("autoUpdate", true);
 		autoDownload = cfg.getBoolean("autoDownload", true);
@@ -91,16 +94,17 @@ public class ConfigHandler {
 		printWriter.println("silentMode: " + silentMode);
 		printWriter.println("");
 		printWriter.println(
-				"#Weather or not to automatically generate the permissions files on startup. Please note that the");
-		printWriter.println("#files will only generate 20 seconds after this plugin loads.");
-		printWriter.println("autoGen: " + autoGen);
+				"#Whether or not to automatically generate the permissions files after every startup. Please note");
+		printWriter.println("#that the files will only generate 5 seconds after this plugin loads.");
+		printWriter.println("autoGenerate: " + autoGenerate);
 		printWriter.println("");
 		printWriter.println(
 				"#When true, if any plugin is removed, added, or updated, the permission files will be regenerated.");
+		printWriter.println("#Has no effect if autoGenerate is enabled.");
 		printWriter.println("regenerateOnPluginChange: " + regenerateOnPluginChange);
 		printWriter.println("");
 		printWriter.println(
-				"#Weather or not to check for updates. If autoDownload is disabled, you will still get a message");
+				"#Whether or not to check for updates. If autoDownload is disabled, you will still get a message");
 		printWriter.println("#about available updates in the server console.");
 		printWriter.println("autoUpdate: " + autoUpdate);
 		printWriter.println("");
@@ -130,7 +134,7 @@ public class ConfigHandler {
 		try {
 			printWriter = new PrintWriter(new FileWriter(cfgf));
 		} catch (IOException e) {
-			plugin.PST(e);
+			plugin.printStackTrace(e);
 			plugin.warn("Error adding comments to config.yml!");
 			return;
 		}
@@ -139,7 +143,7 @@ public class ConfigHandler {
 		firstRun = cfg.getBoolean("firstRun", false);
 		sendStats = cfg.getBoolean("sendStats", true);
 		silentMode = cfg.getBoolean("silentMode", false);
-		autoGen = cfg.getBoolean("autoGen", true);
+		autoGenerate = cfg.getBoolean("autoGenerate", true);
 		regenerateOnPluginChange = cfg.getBoolean("regenerateOnPluginChange", true);
 		autoUpdate = cfg.getBoolean("autoUpdate", true);
 		autoDownload = cfg.getBoolean("autoDownload", true);
@@ -151,7 +155,7 @@ public class ConfigHandler {
 		printWriter.println("firstRun: " + firstRun);
 		printWriter.println("sendStats: " + sendStats);
 		printWriter.println("silentMode: " + silentMode);
-		printWriter.println("autoGen: " + autoGen);
+		printWriter.println("autoGenerate: " + autoGenerate);
 		printWriter.println("regenerateOnPluginChange: " + regenerateOnPluginChange);
 		printWriter.println("autoUpdate: " + autoUpdate);
 		printWriter.println("autoDownload: " + autoDownload);
@@ -164,15 +168,7 @@ public class ConfigHandler {
 
 	public void save() {
 		plugin.saveConfig();
-		Main.configuration = plugin.getConfig();
-		cfg = plugin.getConfig();
 		addComments();
-	}
-
-	public void reload() {
-		plugin.reloadConfig();
-		Main.configuration = plugin.getConfig();
-		cfg = plugin.getConfig();
 	}
 
 }

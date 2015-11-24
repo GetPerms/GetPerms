@@ -211,6 +211,7 @@ public class Metrics {
 
 				private boolean firstPost = true;
 
+				@Override
 				public void run() {
 					try {
 						// This has to be synchronized or it can collide with
@@ -346,7 +347,7 @@ public class Metrics {
 
 	/**
 	 * Gets the online player (backwards compatibility)
-	 * 
+	 *
 	 * @return online player amount
 	 */
 	private int getOnlinePlayers() {
@@ -378,7 +379,7 @@ public class Metrics {
 																 // is enabled
 		String pluginVersion = description.getVersion();
 		String serverVersion = Bukkit.getVersion();
-		int playersOnline = this.getOnlinePlayers();
+		int playersOnline = getOnlinePlayers();
 
 		// END server software specific section -- all code below does not use
 		// any code outside of this class / Java
@@ -548,11 +549,12 @@ public class Metrics {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if (gzos != null)
+			if (gzos != null) {
 				try {
 					gzos.close();
 				} catch (IOException ignore) {
 				}
+			}
 		}
 
 		return baos.toByteArray();

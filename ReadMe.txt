@@ -1,5 +1,5 @@
 OFFICIAL RELEASE 2/16/2012!
-Version Installed: 1.1.11 (11/23/2015)
+Version Installed: 1.1.12 (11/24/2015)
 
 About: GetPerms is a plugin for Minecraft servers running Bukkit. This plugin will gather a list of all permission nodes for every plugin installed on the server and output the nodes to a file.
 
@@ -11,17 +11,13 @@ Installation:
 
 Usage:
   1. Start the server
-  2. Go into the server root directory (the folder with the server.properties and bukkit.yml)
-  3. Open 'pnodes.txt' and or 'pnodesfull.txt'
-
-Important:
-Plugin permission files are generated 20 seconds after GetPerms is loaded.
+  2. Go into the GetPerms directory (located at plugins/GetPerms/)
+  3. Open 'permission_nodes.txt' and/or 'permission_nodes_desc.txt'
 
 Commands:
   All commands can be run with /gp as an alias as well
   /getperms regen           (Re)generate the files containing the permission nodes lists
   /getperms reload          Reload the configuration file for GetPerms
-  /getperms help            Lists the commands
 
 Permission Nodes:
   getperms.regen            Allows player to regenerate permission node files
@@ -29,14 +25,14 @@ Permission Nodes:
 
 ---------------FILES---------------
 
-pnodes.txt:
-  Each line is one separate permission node. This file is useful if you want one to just copy and paste the nodes without having to highlight each line separately to avoid copying the description. A permission node's description is available in 'pnodesfull.txt' which is also in the server root directory.
+permission_nodes.txt:
+  Each line is one separate permission node. This file is useful if you want one to just copy and paste the nodes without having to highlight each line separately to avoid copying the description. A permission node's description is available in 'permission_nodes_desc.txt' which is also in GetPerms' plugin folder (located at plugins/GetPerms/).
 
-pnodesfull.txt
-  Quite the same as pnodes.txt, except this one has the description next to each node. Permission nodes are listed in  separate groups (a group for each plugin).
+permission_nodes_desc.txt
+  Quite the same as 'permission_nodes.txt', except this one has the description next to each node. Permission nodes are grouped by plugin.
 
-[Plugin name]pnodes.txt
-  This is the same thing as pnodes.txt, except for a specific plugin. These are usually generated when a plugin doesn't specify all of its permission nodes in its plugin.yml, such as Essentials.
+[Plugin name]_permission_nodes.txt
+  This is the same thing as permission_nodes.txt, except for a specific plugin. These are usually generated when a plugin doesn't specify all of its permission nodes in its plugin.yml, such as Essentials.
 
-[Plugin name]pnodesfull.txt
-  This is the same thing as pnodesfull.txt, except for a specific plugin. These are usually generated when a plugin doesn't specify all of its permission nodes in its plugin.yml, such as Essentials.
+[Plugin name]_permission_nodes_desc.txt
+  This is the same thing as permission_nodes_desc.txt, except for a specific plugin. These are usually generated when a plugin doesn't specify all of its permission nodes in its plugin.yml, such as Essentials.

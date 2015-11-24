@@ -1,5 +1,19 @@
 Changelog:
 
+v1.1.12 (11/23/15)
+Cleaned up a lot more code
+Reduced redundant code
+Reduced console output message count
+Fixed always regenerating files when regenerateOnPluginChange was set to true
+Imporved command handling
+Changed initial permission list generation delay from 20 seconds to 5 seconds
+Changed configuration option autoGen to autoGenerate
+Changed default configuration to make default behavior generate only when a plugin changes (autoGenerate changed to false)
+pnodes.txt and pnodesfull.txt renamed to permission_nodes.txt and permission_nodes_desc.txt, respectively
+Permission list files are now output to the plugin folder instead of the server directory
+Plugin update jars are now downloaded to the plugin folder instead of update/
+Automatically cleans up old files left from file name changes
+
 v1.1.11 (11/23/15)
 Updated metrics from R6 to R7
 
