@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import com.github.GetPerms.GetPerms.command.AbstractCommand;
 import com.github.GetPerms.GetPerms.command.RegenCommand;
 import com.github.GetPerms.GetPerms.command.ReloadCommand;
+import com.github.GetPerms.GetPerms.command.UpdateCommand;
 
 public class CommandHandler implements CommandExecutor {
 
@@ -36,6 +37,9 @@ public class CommandHandler implements CommandExecutor {
 			case "regen":
 				commandClass = new RegenCommand(plugin, "regen");
 				break;
+			case "update":
+				commandClass = new UpdateCommand(plugin, "update");
+				break;
 			default:
 				showHelp(sender);
 				return true;
@@ -52,6 +56,7 @@ public class CommandHandler implements CommandExecutor {
 		sender.sendMessage(ChatColor.GOLD + "/getperms reload" + ChatColor.RESET + " - Reloads the configuration file");
 		sender.sendMessage(
 				ChatColor.GOLD + "/getperms regen" + ChatColor.RESET + " - Regenerates the permission node lists");
+		sender.sendMessage(ChatColor.GOLD + "/getperms update" + ChatColor.RESET + " - Runs the update task");
 	}
 
 }

@@ -1,5 +1,12 @@
 Changelog:
 
+v1.1.14 (11/25/15)
+Fixed the updater creating a folder instead of a file for updates
+Refractored and cleaned up the update system
+Added an update command, /getperms update
+Update system now uses the Curse ServerMods API for release files
+Changed update system to verify update files based on MD5 checksum instead of specific HTML elements (release files only)
+
 v1.1.13 (11/24/15)
 Fixed plugins.yml not saving
 Added another file to cleanup
@@ -9,7 +16,7 @@ Cleaned up a lot more code
 Reduced redundant code
 Reduced console output message count
 Fixed always regenerating files when regenerateOnPluginChange was set to true
-Imporved command handling
+Improved command handling
 Changed initial permission list generation delay from 20 seconds to 5 seconds
 Changed configuration option autoGen to autoGenerate
 Changed default configuration to make default behavior generate only when a plugin changes (autoGenerate changed to false)

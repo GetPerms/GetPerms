@@ -2,17 +2,14 @@ package com.github.GetPerms.GetPerms;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.AccessControlException;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Set;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
@@ -21,45 +18,54 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 public class Main extends JavaPlugin {
 
+	public Configuration configuration;
 	public ConfigHandler configHandler;
 	private PluginManager pluginManager;
+	private YamlHandler pluginListHandler;
+	private BukkitScheduler scheduler;
 	protected String pluginVersion;
-	private final File dataFolder = getDataFolder();
-	private YamlHandler pluginListHandler = new YamlHandler(this, "plugins");
-	protected final File permissionNodes = new File(dataFolder, "permission_nodes.txt");
-	protected final File permissionNodesDesc = new File(dataFolder, "permission_nodes_desc.txt");
-	private final File readMe = new File(dataFolder, "ReadMe.txt");
-	private final File changeLog = new File(dataFolder, "Changelog.txt");
-	private final File updateFolder = new File(dataFolder, "update");
-	private final File temporaryDownloadFile = new File(dataFolder, "temporaryDownload");
-	private final File updateDownloadFile = new File(updateFolder, "GetPerms.jar");
-	public Configuration configuration;
+	private File dataFolder;
+	protected File permissionNodes;
+	protected File permissionNodesDesc;
+	private File readMe;
+	private File changeLog;
 	public Logger logger;
 	private boolean generationFinished = false;
 
 	@Override
 	public void onEnable() {
-		// Check and create the plugin data folder
-		if (!dataFolder.exists()) {
-			dataFolder.mkdirs();
-		}
-
 		configuration = getConfig();
 		configuration.options().copyDefaults(true);
 		saveConfig();
 
+		pluginManager = Bukkit.getServer().getPluginManager();
+		scheduler = Bukkit.getScheduler();
+
 		configHandler = new ConfigHandler(this);
+		configHandler.load();
 		configuration = getConfig();
+		logger = getLogger();
+		debugValues();
+
+		pluginListHandler = new YamlHandler(this, "plugins");
+
 		PluginDescriptionFile pluginDescriptionFile = getDescription();
 		pluginVersion = pluginDescriptionFile.getVersion();
-		logger = getLogger();
-		configHandler.load();
 
-		pluginManager = Bukkit.getServer().getPluginManager();
-		debugValues();
+		dataFolder = getDataFolder();
+		permissionNodes = new File(dataFolder, "permission_nodes.txt");
+		permissionNodesDesc = new File(dataFolder, "permission_nodes_desc.txt");
+		readMe = new File(dataFolder, "ReadMe.txt");
+		changeLog = new File(dataFolder, "Changelog.txt");
+
+		// Check and create the plugin data folder
+		if (!dataFolder.exists()) {
+			dataFolder.mkdirs();
+		}
 
 		if (configuration.getBoolean("sendStats")) {
 			info("Sending usage stats to mcstats.org every 15 minutes.");
@@ -90,10 +96,8 @@ public class Main extends JavaPlugin {
 		getCommand("getperms").setExecutor(commandHandler);
 		getCommand("gp").setExecutor(commandHandler);
 
-		info("GetPerms " + pluginVersion + " enabled!");
-
 		if (configuration.getBoolean("autoUpdate", true)) {
-			checkForUpdates();
+			scheduler.scheduleSyncRepeatingTask(this, new UpdateTask(this), 10 * 20L, 60 * 60 * 24 * 20L);
 		}
 
 		if (configuration.getBoolean("regenerateOnPluginChange", true)) {
@@ -113,6 +117,8 @@ public class Main extends JavaPlugin {
 			generateFiles(true);
 			generationFinished = true;
 		}
+
+		info("GetPerms " + pluginVersion + " enabled!");
 
 		if (configuration.getBoolean("disableOnFinish", false)) {
 			debug("DisableOnFinish enabled");
@@ -154,75 +160,8 @@ public class Main extends JavaPlugin {
 		config("debugMode: " + debugMode);
 	}
 
-	private final void checkForUpdates() {
-		boolean devb = configuration.getBoolean("devBuilds");
-		String dlurl = "https://raw.github.com/GetPerms/GetPerms/master/checks/dlurl";
-		String newestVersion = "https://raw.github.com/GetPerms/GetPerms/master/checks/ver";
-		String checkdev = "https://raw.github.com/GetPerms/GetPerms/master/checks/dev";
-		String force = "https://raw.github.com/GetPerms/GetPerms/master/checks/force";
-		String u = "https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar";
-		String line;
-		boolean dv;
-		try {
-			URL fa = new URL(force);
-			BufferedReader fb = new BufferedReader(new InputStreamReader(fa.openStream()));
-			String fc = fb.readLine();
-			if (!devb) {
-				URL dlcheck = new URL(dlurl);
-				BufferedReader a = new BufferedReader(new InputStreamReader(dlcheck.openStream()));
-				u = a.readLine();
-				URL client = new URL(newestVersion);
-				BufferedReader buf = new BufferedReader(new InputStreamReader(client.openStream()));
-				line = buf.readLine();
-				dv = false;
-			} else {
-				URL client = new URL(checkdev);
-				BufferedReader buf = new BufferedReader(new InputStreamReader(client.openStream()));
-				line = buf.readLine();
-				dv = true;
-			}
-			if (fc == "true") {
-				dv = true;
-			}
-			if (newer(pluginVersion, line, dv)) {
-				if (configuration.getBoolean("autoDownload", true)) {
-					info("Newest GetPerms version" + line + " is available.");
-
-					if (!devb) {
-						info("Downloading latest recommended build...");
-					} else {
-						info("Downloading latest developmental build...");
-					}
-
-					updateFolder.mkdirs();
-
-					if (downloadUpdate(u, updateDownloadFile)) {
-						info("Newest version of GetPerms is located in");
-						info("'plugins/" + getName() + "/update/GetPerms.jar'.");
-					} else {
-						warn("Update file is corrupt! (Contains HTML elements)");
-						warn("The update will most likely be available later.");
-					}
-
-				} else {
-					info("Newest GetPerms version" + line + " is available for download, you can");
-					info("get it at " + u);
-					info("or the latest dev build at");
-					info("https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar");
-				}
-			} else {
-				info("You have the latest version!");
-			}
-		} catch (MalformedURLException e) {
-			printStackTrace(e);
-			warn("Unable to check for updates.");
-		} catch (IOException e) {
-			printStackTrace(e);
-			warn("Unable to check for updates.");
-		} catch (AccessControlException e) {
-			printStackTrace(e);
-			warn("Unable to check for updates.");
-		}
+	public void runUpdateTask() {
+		scheduler.scheduleSyncDelayedTask(this, new UpdateTask(this), 10L);
 	}
 
 	public final void printStackTrace(Exception e) {
@@ -245,44 +184,10 @@ public class Main extends JavaPlugin {
 		}
 	}
 
-	private final boolean newer(String current, String check, boolean dev) {
-		if (!dev) {
-			boolean result = false;
-			String[] currentVersion = current.split("\\.");
-			String[] checkVersion = check.split("\\.");
-			int i = Integer.parseInt(currentVersion[0]);
-			int j = Integer.parseInt(checkVersion[0]);
-			if (i > j) {
-				result = false;
-			} else if (i == j) {
-				i = Integer.parseInt(currentVersion[1]);
-				j = Integer.parseInt(checkVersion[1]);
-				if (i > j) {
-					result = false;
-				} else if (i == j) {
-					i = Integer.parseInt(currentVersion[2]);
-					j = Integer.parseInt(checkVersion[2]);
-					if (i >= j) {
-						result = false;
-					} else {
-						result = true;
-					}
-				} else {
-					result = true;
-				}
-			} else {
-				result = true;
-			}
-			return result;
-		} else {
-			return true;
-		}
-	}
-
 	// Gets the readme and changelog
 	private void getStartFiles() {
 		try {
-			getDataFolder().mkdir();
+			dataFolder.mkdir();
 			info("Downloading changelog and readme...");
 			downloadFile("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt", changeLog);
 			downloadFile("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt", readMe);
@@ -294,6 +199,10 @@ public class Main extends JavaPlugin {
 			configuration.set("firstRun", true);
 			printStackTrace(e);
 			warn("Error downloading readme and changelog!");
+			info("The readme is available at");
+			info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
+			info("and the changelog is available at");
+			info("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt");
 		} catch (FileNotFoundException e) {
 			debug("FileNotFoundException thrown, setting firstRun to true...");
 			configuration.set("firstRun", true);
@@ -308,71 +217,47 @@ public class Main extends JavaPlugin {
 			configuration.set("firstRun", true);
 			printStackTrace(e);
 			warn("Error downloading readme and changelog!");
-		}
-	}
-
-	public static void downloadFile(String url, File file) throws MalformedURLException, IOException {
-		BufferedInputStream in = new BufferedInputStream(new java.net.URL(url).openStream());
-		FileOutputStream fos = new FileOutputStream(file);
-		BufferedOutputStream bout = new BufferedOutputStream(fos, 1024);
-		byte[] data = new byte[1024];
-		int x = 0;
-		while ((x = in.read(data, 0, 1024)) >= 0) {
-			bout.write(data, 0, x);
-		}
-		bout.close();
-		in.close();
-	}
-
-	private boolean downloadUpdate(String url, File file) throws MalformedURLException, IOException {
-		BufferedInputStream in = new BufferedInputStream(new java.net.URL(url).openStream());
-		FileOutputStream fos = new FileOutputStream(temporaryDownloadFile);
-		BufferedOutputStream bout = new BufferedOutputStream(fos, 1024);
-		byte[] data = new byte[1024];
-		int x = 0;
-		while ((x = in.read(data, 0, 1024)) >= 0) {
-			bout.write(data, 0, x);
-		}
-		bout.close();
-		in.close();
-		if (verifyDownload(temporaryDownloadFile)) {
-			temporaryDownloadFile.renameTo(file);
-			return true;
-		}
-		temporaryDownloadFile.delete();
-		return false;
-	}
-
-	private boolean verifyDownload(File file) {
-		BufferedReader reader = null;
-		boolean valid = true;
-		try {
-			reader = new BufferedReader(new FileReader(file));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				if (line.contains("content=\"text/html;charset=utf-8\"")) {
-					valid = false;
-				} else if (line.contains("html lang=\"en\"")) {
-					valid = false;
-				} else if (line.contains("<html>")) {
-					valid = false;
-				}
-			}
-		} catch (EOFException ignored) {
-		} catch (FileNotFoundException e) {
+			info("The readme is available at");
+			info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
+			info("and the changelog is available at");
+			info("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt");
+		} catch (NoSuchAlgorithmException e) {
+			debug("NoSuchAlgorithmException thrown, setting firstRun to true...");
+			configuration.set("firstRun", true);
 			printStackTrace(e);
-		} catch (IOException e) {
-			printStackTrace(e);
+			warn("Error downloading readme and changelog!");
+			info("The readme is available at");
+			info("https://raw.github.com/GetPerms/GetPerms/master/ReadMe.txt");
+			info("and the changelog is available at");
+			info("https://raw.github.com/GetPerms/GetPerms/master/Changelog.txt");
 		}
+	}
 
-		if (reader != null) {
-			try {
-				reader.close();
-			} catch (IOException e) {
-				printStackTrace(e);
-			}
+	public String downloadFile(String url, File file)
+			throws MalformedURLException, IOException, NoSuchAlgorithmException {
+		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+
+		DigestInputStream inputStream = new DigestInputStream(
+				new BufferedInputStream(new java.net.URL(url).openStream()), messageDigest);
+		FileOutputStream fileOutputStream = new FileOutputStream(file);
+		BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream, 1024);
+		byte[] data = new byte[1024];
+		int i = 0;
+		while ((i = inputStream.read(data, 0, 1024)) >= 0) {
+			bufferedOutputStream.write(data, 0, i);
 		}
-		return valid;
+		bufferedOutputStream.close();
+		inputStream.close();
+
+		return convertByteArrayToHexString(messageDigest.digest());
+	}
+
+	private String convertByteArrayToHexString(byte[] arrayBytes) {
+		StringBuffer stringBuffer = new StringBuffer();
+		for (int i = 0; i < arrayBytes.length; i++) {
+			stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16).substring(1));
+		}
+		return stringBuffer.toString();
 	}
 
 	private boolean comparePlugins() {

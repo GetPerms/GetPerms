@@ -56,7 +56,7 @@ public class PluginFileGenerator extends BukkitRunnable {
 		plugin.info("Compiled permission nodes into 'permission_nodes.txt' and");
 		plugin.info("'permission_nodes_desc' in plugins/" + plugin.getName() + "/.");
 		try {
-			tr.Get();
+			tr.getPermissionLists();
 		} catch (MalformedURLException e) {
 			plugin.printStackTrace(e);
 		} catch (IOException e) {
