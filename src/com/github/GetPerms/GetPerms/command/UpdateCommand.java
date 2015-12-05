@@ -1,8 +1,10 @@
 package com.github.GetPerms.GetPerms.command;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import com.github.GetPerms.GetPerms.Main;
+import com.github.GetPerms.GetPerms.UpdateTask;
 
 public class UpdateCommand extends AbstractCommand {
 
@@ -25,7 +27,7 @@ public class UpdateCommand extends AbstractCommand {
 			}
 
 			sender.sendMessage(ChatColor.AQUA + "[GetPerms] " + ChatColor.RESET + "Running update task...");
-			getPlugin().runUpdateTask();
+			Bukkit.getScheduler().scheduleSyncDelayedTask(getPlugin(), new UpdateTask(getPlugin(), sender), 10L);
 		}
 		return true;
 	}

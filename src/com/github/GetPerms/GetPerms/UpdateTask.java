@@ -3,6 +3,7 @@ package com.github.GetPerms.GetPerms;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,11 +12,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessControlException;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -23,6 +29,7 @@ import org.json.simple.JSONValue;
 
 public class UpdateTask implements Runnable {
 
+	private static final String PLUGIN_PREFIX = ChatColor.AQUA + "[GetPerms] " + ChatColor.RESET;
 	private static final String DEVELOPMENT_VERSION = "https://raw.github.com/GetPerms/GetPerms/master/checks/dev";
 	private static final String IGNORE_VERSION = "https://raw.github.com/GetPerms/GetPerms/master/checks/force";
 	private static final String DEVELOPMENT_FILE = "https://raw.github.com/GetPerms/GetPerms/master/GetPerms.jar";
@@ -46,7 +53,9 @@ public class UpdateTask implements Runnable {
 	public UpdateTask(Main plugin, CommandSender sender) {
 		this.plugin = plugin;
 		configuration = plugin.getConfig();
-		this.sender = sender;
+		if (sender instanceof Player) {
+			this.sender = sender;
+		}
 		pluginVersion = plugin.getDescription().getVersion();
 		dataFolder = plugin.getDataFolder();
 		updateFolder = new File(dataFolder, "update");
@@ -91,7 +100,11 @@ public class UpdateTask implements Runnable {
 				}
 
 				if (newestFile == null) {
-					sendWarning("No release files could be found!");
+					sendWarning("No release files could be found! Trying again in one minute.");
+
+					sendWarning("Unable to check for updates. Trying again in one minute.");
+
+					scheduleUpdateTask();
 					return;
 				}
 
@@ -126,6 +139,19 @@ public class UpdateTask implements Runnable {
 				if (configuration.getBoolean("autoDownload", true)) {
 					sendInfo("GetPerms v" + latestVersion + " is available.");
 
+					if (updateDownloadFile.exists() && updateDownloadFile.isFile()) {
+						try {
+							if (verifyChecksum(updateDownloadFile, md5Checksum)) {
+								sendInfo("This update has already been downloaded! It is located at");
+								sendInfo("'plugins/" + plugin.getDescription().getName() + "/update/GetPerms.jar'.");
+								return;
+							}
+						} catch (NoSuchAlgorithmException e) {
+							plugin.printStackTrace(e);
+							return;
+						}
+					}
+
 					if (useDevelopmentBuild) {
 						sendInfo("Downloading latest development build...");
 					} else {
@@ -137,28 +163,19 @@ public class UpdateTask implements Runnable {
 					String downloadChecksum;
 					try {
 						downloadChecksum = downloadUpdate(downloadUrl, updateDownloadFile);
-					} catch (MalformedURLException e) {
-						plugin.printStackTrace(e);
-						sendWarning("Unable to download the latest update!");
-						return;
-					} catch (IOException e) {
-						plugin.printStackTrace(e);
-						sendWarning("Unable to download the latest update!");
-						return;
-					} catch (NoSuchAlgorithmException e) {
-						plugin.printStackTrace(e);
-						sendWarning("Unable to download the latest update!");
-						return;
 					} catch (Exception e) {
+						// MalformedURLException, IOException,
+						// NoSuchAlgorithmException, Exception
 						plugin.printStackTrace(e);
-						sendWarning("Unable to download the latest update!");
+						sendWarning("Unable to download the latest update! It can be downloaded from");
+						sendWarning(downloadUrl);
 						return;
 					}
 
 					if (useDevelopmentBuild) {
-						if (verifyUpdate(temporaryDownloadFile)) {
+						if (verifyHTMLContent(temporaryDownloadFile)) {
 							temporaryDownloadFile.renameTo(updateDownloadFile);
-							sendInfo("Newest version of GetPerms is located at");
+							sendInfo("The GetPerms update is located at");
 							sendInfo("'plugins/" + plugin.getDescription().getName() + "/update/GetPerms.jar'.");
 						} else {
 							temporaryDownloadFile.delete();
@@ -169,7 +186,7 @@ public class UpdateTask implements Runnable {
 					} else {
 						if (downloadChecksum.equals(md5Checksum)) {
 							temporaryDownloadFile.renameTo(updateDownloadFile);
-							sendInfo("Newest version of GetPerms is located at");
+							sendInfo("The GetPerms update is located at");
 							sendInfo("'plugins/" + plugin.getDescription().getName() + "/update/GetPerms.jar'.");
 						} else {
 							temporaryDownloadFile.delete();
@@ -191,16 +208,24 @@ public class UpdateTask implements Runnable {
 			} else {
 				sendInfo("You have the latest version!");
 			}
+			return;
 		} catch (MalformedURLException e) {
 			plugin.printStackTrace(e);
-			sendWarning("Unable to check for updates.");
 		} catch (IOException e) {
-			plugin.printStackTrace(e);
-			sendWarning("Unable to check for updates.");
+			Pattern pattern = Pattern.compile("HTTP response code: (\\d+)");
+			Matcher matcher = pattern.matcher(e.getMessage());
+			if (!matcher.find()) {
+				plugin.printStackTrace(e);
+			} else {
+				sendWarning("Unable to check for updates. Trying again in one minute.");
+
+				scheduleUpdateTask();
+			}
 		} catch (AccessControlException e) {
 			plugin.printStackTrace(e);
-			sendWarning("Unable to check for updates.");
 		}
+
+		sendWarning("Unable to check for updates.");
 	}
 
 	private String downloadUpdate(String url, File file) throws Exception {
@@ -217,9 +242,13 @@ public class UpdateTask implements Runnable {
 		return plugin.downloadFile(url, temporaryDownloadFile);
 	}
 
+	private void scheduleUpdateTask() {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new UpdateTask(plugin), 60 * 20L);
+	}
+
 	private void sendInfo(String message) {
 		if (sender != null) {
-			sender.sendMessage(message);
+			sender.sendMessage(PLUGIN_PREFIX + message);
 		}
 
 		plugin.info(message);
@@ -227,13 +256,13 @@ public class UpdateTask implements Runnable {
 
 	private void sendWarning(String message) {
 		if (sender != null) {
-			sender.sendMessage(message);
+			sender.sendMessage(PLUGIN_PREFIX + message);
 		}
 
 		plugin.warn(message);
 	}
 
-	private boolean verifyUpdate(File file) {
+	private boolean verifyHTMLContent(File file) {
 		BufferedReader reader = null;
 		boolean valid = true;
 		try {
@@ -263,6 +292,30 @@ public class UpdateTask implements Runnable {
 			}
 		}
 		return valid;
+	}
+
+	private boolean verifyChecksum(File file, String checksum)
+			throws MalformedURLException, IOException, NoSuchAlgorithmException {
+		MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+
+		DigestInputStream inputStream = new DigestInputStream(new FileInputStream(updateDownloadFile), messageDigest);
+		byte[] data = new byte[1024];
+		while (inputStream.read(data, 0, 1024) >= 0) {
+			;
+		}
+		inputStream.close();
+
+		String fileChecksum = convertByteArrayToHexString(messageDigest.digest());
+
+		return fileChecksum.equals(checksum);
+	}
+
+	private String convertByteArrayToHexString(byte[] arrayBytes) {
+		StringBuffer stringBuffer = new StringBuffer();
+		for (int i = 0; i < arrayBytes.length; i++) {
+			stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16).substring(1));
+		}
+		return stringBuffer.toString();
 	}
 
 	private final boolean newer(String current, String check) {

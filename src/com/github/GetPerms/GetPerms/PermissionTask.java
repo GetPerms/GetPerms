@@ -3,26 +3,23 @@ package com.github.GetPerms.GetPerms;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.util.List;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
-public class PluginFileGenerator extends BukkitRunnable {
+public class PermissionTask implements Runnable {
 
 	private Main plugin;
 
-	public PluginFileGenerator(Main plugin) {
+	public PermissionTask(Main plugin) {
 		this.plugin = plugin;
 	}
 
 	@Override
 	public void run() {
 		plugin.info("Generating files...");
-		TempRetrieval tr = new TempRetrieval(plugin);
 		Plugin[] pluginList = plugin.getServer().getPluginManager().getPlugins();
-		plugin.debug("Retrieved plugin list!");
+
 		plugin.debug("Retrieving permission nodes...");
 		try {
 			PrintWriter printWriter1 = new PrintWriter(new FileWriter(plugin.permissionNodes));
@@ -53,15 +50,11 @@ public class PluginFileGenerator extends BukkitRunnable {
 		} catch (IOException e) {
 			plugin.printStackTrace(e);
 		}
-		plugin.info("Compiled permission nodes into 'permission_nodes.txt' and");
-		plugin.info("'permission_nodes_desc' in plugins/" + plugin.getName() + "/.");
-		try {
-			tr.getPermissionLists();
-		} catch (MalformedURLException e) {
-			plugin.printStackTrace(e);
-		} catch (IOException e) {
-			plugin.printStackTrace(e);
-		}
+		plugin.info("Compiled permission nodes into '" + Main.PERMISSIONS_FILENAME + "' and");
+		plugin.info("'" + Main.PERMISSIONS_DESCRIPTION_FILENAME + "' in plugins/" + plugin.getName() + "/.");
+
+		DatabaseDownloader downloader = new DatabaseDownloader(plugin, plugin.permissionFolder);
+		downloader.getPluginPermissions();
 		plugin.info("Permission lists generated!");
 	}
 

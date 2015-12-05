@@ -1,0 +1,136 @@
+worldedit.biome.info - Get the biome of the targeted block.
+worldedit.biome.set - Sets the biome of the player's current block or region.
+worldedit.biome.list - Gets all biomes available.
+worldedit.chunkinfo - Get information about the chunk that you are inside
+worldedit.listchunks - List chunks that your selection includes
+worldedit.delchunks - Delete chunks that your selection includes
+worldedit.clipboard.cut - Cut the selection to the clipboard
+worldedit.clipboard.paste - Paste the clipboard's contents
+worldedit.schematic.formats - List available schematic formats
+worldedit.clipboard.load, worldedit.schematic.load - Load a schematic into your clipboard
+worldedit.schematic.list - List available schematics
+worldedit.clipboard.save, worldedit.schematic.save - Save a schematic into your clipboard
+worldedit.clipboard.clear - Clear your clipboard
+worldedit.clipboard.load - Load a schematic into your clipboard
+worldedit.clipboard.save - Save a schematic into your clipboard
+worldedit.clipboard.copy - Copy the selection to the clipboard
+worldedit.clipboard.flip - Flip the contents of the clipboard.
+worldedit.clipboard.rotate - Rotate the contents of the clipboard
+worldedit.reload - Reload WorldEdit
+worldedit.help - Displays help for the given command or lists all commands.
+worldedit.fast - Toggle fast mode
+worldedit.global-mask - Set the global mask
+worldedit.limit - Modify block change limit
+worldedit.generation.cylinder - Generates a hollow cylinder.
+worldedit.generation.cylinder - Generates a cylinder.
+worldedit.generation.sphere - Generates a hollow sphere.
+worldedit.generation.sphere - Generates a filled sphere.
+worldedit.generation.forest - Generate a forest
+worldedit.generation.pumpkins - Generate pumpkin patches
+worldedit.generation.pyramid - Generate a filled pyramid
+worldedit.generation.pyramid - Generate a hollow pyramid
+worldedit.generation.shape - Generates a shape according to a formula.
+worldedit.generation.shape, worldedit.biome.set - Sets biome according to a formula.
+worldedit.history.undo - Undoes the last action
+worldedit.history.redo - Redoes the last action (from history)
+worldedit.history.clear - Clear your history
+worldedit.navigation.unstuck - Escape from being stuck inside a block
+worldedit.navigation.ascend - Go up a floor
+worldedit.navigation.descend - Go down a floor
+worldedit.navigation.ceiling - Go to the celing
+worldedit.navigation.thru.command - Passthrough walls
+worldedit.navigation.jumpto.command - Teleport to a location
+worldedit.navigation.up - Go upwards some distance
+worldedit.region.hollow - Hollows out the object contained in this selection
+worldedit.region.line - Draws a line segment between cuboid selection corners
+worldedit.region.curve - Draws a spline through selected points
+worldedit.region.overlay - Set a block on top of blocks in the region
+worldedit.region.center - Set the center block(s)
+worldedit.region.naturalize - 3 layers of dirt on top then rock below
+worldedit.region.walls - Build the four sides of the selection
+worldedit.region.faces - Build the walls, ceiling, and floor of a selection
+worldedit.region.smooth - Smooth the elevation in the selection
+worldedit.region.move - Move the contents of the selection
+worldedit.regen - Regenerates the contents of the selection
+worldedit.region.deform - Deforms a selected region with an expression
+worldedit.region.forest - Make a forest within the region
+worldedit.region.replace - Replace all blocks in the selection with another
+worldedit.region.stack - Repeat the contents of the selection
+worldedit.region.set - Set all the blocks inside the selection to a block
+worldedit.scripting.execute - Execute last CraftScript
+worldedit.scripting.execute - Execute a CraftScript
+worldedit.selection.pos - Set position 2
+worldedit.selection.chunk - Set the selection to your current chunk.
+worldedit.selection.pos - Set position 1
+worldedit.selection.hpos - Set position 1 to targeted block
+worldedit.selection.hpos - Set position 2 to targeted block
+worldedit.wand - Get the wand object
+worldedit.wand.toggle - Toggle functionality of the edit wand
+worldedit.selection.contract - Contract the selection area
+worldedit.selection.outset - Outset the selection area
+worldedit.selection.inset - Inset the selection area
+worldedit.analysis.distr - Get the distribution of blocks in the selection
+worldedit.analysis.count - Counts the number of a certain type of block
+worldedit.selection.size - Get information about the selection
+worldedit.selection.expand - Expand the selection area
+worldedit.selection.shift - Shift the selection area
+worldedit.snapshots.restore - Choose a snapshot to use
+worldedit.snapshots.restore - Choose the snapshot based on the list id
+worldedit.snapshots.list - List snapshots
+worldedit.snapshots.restore - Choose the nearest snapshot after a date
+worldedit.snapshots.restore - Choose the nearest snapshot before a date
+worldedit.snapshots.restore - Restore the selection from a snapshot
+worldedit.superpickaxe - Toggle the super pickaxe pickaxe function
+worldedit.superpickaxe - Enable the single block super pickaxe mode
+worldedit.superpickaxe.area - Enable the area super pickaxe pickaxe mode
+worldedit.superpickaxe.recursive - Enable the recursive super pickaxe pickaxe mode
+worldedit.tool.tree - Tree generator tool
+worldedit.tool.replacer - Block replacer tool
+worldedit.tool.data-cycler - Block data cycler tool
+worldedit.tool.flood-fill - Flood fill tool
+worldedit.brush.sphere - Choose the sphere brush
+worldedit.brush.cylinder - Choose the cylinder brush
+worldedit.brush.clipboard - Choose the clipboard brush
+worldedit.brush.smooth - Choose the terrain softener brush
+worldedit.brush.ex - Shortcut fire extinguisher brush
+worldedit.brush.gravity - Gravity brush
+worldedit.brush.butcher - Butcher brush
+worldedit.tool.deltree - Floating tree remover tool
+worldedit.tool.farwand - Wand at a distance tool
+worldedit.tool.lrbuild - Long-range building tool
+worldedit.tool.info - Block information tool
+worldedit.brush.options.material - Set the brush material
+worldedit.brush.options.range - Set the brush range
+worldedit.brush.options.size - Set the brush size
+worldedit.brush.options.mask - Set the brush mask
+worldedit.tool.tree - Tree generator tool
+worldedit.tool.replacer - Block replacer tool
+worldedit.tool.data-cycler - Block data cycler tool
+worldedit.tool.flood-fill - Flood fill tool
+worldedit.brush.sphere - Choose the sphere brush
+worldedit.brush.cylinder - Choose the cylinder brush
+worldedit.brush.clipboard - Choose the clipboard brush
+worldedit.brush.smooth - Choose the terrain softener brush
+worldedit.brush.ex - Shortcut fire extinguisher brush
+worldedit.brush.gravity - Gravity brush
+worldedit.brush.butcher - Butcher brush
+worldedit.tool.deltree - Floating tree remover tool
+worldedit.tool.farwand - Wand at a distance tool
+worldedit.tool.lrbuild - Long-range building tool
+worldedit.tool.info - Block information tool
+worldedit.fill.recursive - Fill a hole recursively
+worldedit.drain - Drain a pool
+worldedit.fixlava - Fix lava to be stationary
+worldedit.fixwater - Fix water to be stationary
+worldedit.removeabove - Remove blocks above your head.
+worldedit.removebelow - Remove blocks below you.
+worldedit.removenear - Remove blocks near you.
+worldedit.replacenear - Replace nearby blocks
+worldedit.snow - Simulates snow
+worldedit.thaw - Thaws the area
+worldedit.green - Greens the area
+worldedit.extinguish - Extinguish nearby fire
+worldedit.butcher - Kill all or nearby mobs
+worldedit.remove - Remove all entities of a type
+worldedit.fill - Fill a hole
+worldedit.help - Displays help for the given command or lists all commands.

@@ -22,6 +22,9 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 public class Main extends JavaPlugin {
 
+	public static final String PERMISSIONS_FILENAME = "permission_nodes.txt";
+	public static final String PERMISSIONS_DESCRIPTION_FILENAME = "permission_nodes_desc.txt";
+
 	public Configuration configuration;
 	public ConfigHandler configHandler;
 	private PluginManager pluginManager;
@@ -29,6 +32,7 @@ public class Main extends JavaPlugin {
 	private BukkitScheduler scheduler;
 	protected String pluginVersion;
 	private File dataFolder;
+	public File permissionFolder;
 	protected File permissionNodes;
 	protected File permissionNodesDesc;
 	private File readMe;
@@ -57,14 +61,19 @@ public class Main extends JavaPlugin {
 		pluginVersion = pluginDescriptionFile.getVersion();
 
 		dataFolder = getDataFolder();
-		permissionNodes = new File(dataFolder, "permission_nodes.txt");
-		permissionNodesDesc = new File(dataFolder, "permission_nodes_desc.txt");
+		permissionFolder = new File(dataFolder, "permissions");
+		permissionNodes = new File(permissionFolder, PERMISSIONS_FILENAME);
+		permissionNodesDesc = new File(permissionFolder, PERMISSIONS_DESCRIPTION_FILENAME);
 		readMe = new File(dataFolder, "ReadMe.txt");
 		changeLog = new File(dataFolder, "Changelog.txt");
 
 		// Check and create the plugin data folder
 		if (!dataFolder.exists()) {
 			dataFolder.mkdirs();
+		}
+
+		if (!permissionFolder.exists()) {
+			permissionFolder.mkdirs();
 		}
 
 		if (configuration.getBoolean("sendStats")) {
@@ -177,10 +186,10 @@ public class Main extends JavaPlugin {
 	public final void generateFiles(boolean internal) {
 		// internal is true if called by onEnable and False if called by command
 		if (internal && !generationFinished || !internal) {
-			// 5*20 = 5 seconds (20 ticks per second)
-			new PluginFileGenerator(this).runTaskLater(this, 5 * 20);
+			// 5 * 20 = 5 seconds (20 ticks per second)
+			scheduler.scheduleSyncDelayedTask(this, new PermissionTask(this), 5 * 20L);
 		} else if (!internal) {
-			new PluginFileGenerator(this).run();
+			scheduler.scheduleSyncDelayedTask(this, new PermissionTask(this));
 		}
 	}
 
@@ -337,7 +346,10 @@ public class Main extends JavaPlugin {
 
 		File[] oldFileList = {new File(dataFolder, "pluginlist.txt"), new File("pnodes.txt"),
 				new File("pnodesfull.txt"), new File("EssentialsPnodes.txt"), new File("EssentialsPnodesfull.txt"),
-				new File("update/GetPerms.jar"), new File("update/GPtemp.jar")};
+				new File("update/GetPerms.jar"), new File("update/GPtemp.jar"),
+				new File("Essentials_permission_nodes.txt"), new File("Essentials_permission_nodes_desc.txt"),
+				new File(dataFolder, "permission_nodes.txt"), new File(dataFolder, "permission_nodes_desc.txt"),
+				new File(dataFolder, "EssentialsPnodes.txt"), new File(dataFolder, "EssentialsPnodesfull.txt")};
 		File[] oldSoftDirectoryList = {new File("update")};
 
 		for (File file : oldFileList) {
