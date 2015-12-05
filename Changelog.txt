@@ -4,7 +4,7 @@ v1.1.15 (In progress)
 Updates are no longer downloaded if it has already been downloaded and matches the checksum
 Update command now displays output to the running player
 Extra plugin-specific permissions now download from the plugin permission "database" when applicable
-The updater retries under specific failure conditions (Curse ServerMods API returns empty JSON array, Curse ServerMods API returns bad HTTP response code)
+Updater retries under specific failure conditions (Curse ServerMods API returns empty JSON array or bad HTTP response code)
 
 v1.1.14 (11/25/15)
 Fixed the updater creating a folder instead of a file for updates
