@@ -51,7 +51,8 @@ public class PermissionTask implements Runnable {
 			plugin.printStackTrace(e);
 		}
 		plugin.info("Compiled permission nodes into '" + Main.PERMISSIONS_FILENAME + "' and");
-		plugin.info("'" + Main.PERMISSIONS_DESCRIPTION_FILENAME + "' in plugins/" + plugin.getName() + "/.");
+		plugin.info(
+				"'" + Main.PERMISSIONS_DESCRIPTION_FILENAME + "' in plugins/" + plugin.getName() + "/permissions/.");
 
 		DatabaseDownloader downloader = new DatabaseDownloader(plugin, plugin.permissionFolder);
 		downloader.getPluginPermissions();

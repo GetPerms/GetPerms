@@ -2,13 +2,11 @@ name: GetPerms
 author: Smiley43210
 description: Plugin to automatically generate files containing permission nodes for plugins installed on the server.
 main: com.github.GetPerms.GetPerms.Main
-version: 1.1.14
+version: 1.1.15
 commands:
   getperms:
     description: Main plugin command.
-    usage: /<command> <reload|regen|update>
-  gp:
-    description: Main plugin command.
+    aliases: [gp]
     usage: /<command> <reload|regen|update>
 permissions:
   getperms.*:

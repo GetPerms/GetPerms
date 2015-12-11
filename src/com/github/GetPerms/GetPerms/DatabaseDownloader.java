@@ -30,6 +30,7 @@ public class DatabaseDownloader {
 				String databaseEntry = reader.readLine();
 
 				if (databaseEntry == null) {
+					reader.close();
 					return;
 				}
 

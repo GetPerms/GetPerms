@@ -39,6 +39,7 @@ public class Main extends JavaPlugin {
 	private File changeLog;
 	public Logger logger;
 	private boolean generationFinished = false;
+	private int updateTaskId = -1;
 
 	@Override
 	public void onEnable() {
@@ -263,8 +264,8 @@ public class Main extends JavaPlugin {
 
 	private String convertByteArrayToHexString(byte[] arrayBytes) {
 		StringBuffer stringBuffer = new StringBuffer();
-		for (int i = 0; i < arrayBytes.length; i++) {
-			stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16).substring(1));
+		for (byte arrayByte : arrayBytes) {
+			stringBuffer.append(Integer.toString((arrayByte & 0xff) + 0x100, 16).substring(1));
 		}
 		return stringBuffer.toString();
 	}
@@ -305,6 +306,14 @@ public class Main extends JavaPlugin {
 		}
 
 		pluginListHandler.save();
+	}
+
+	public void registerUpdateTask(int taskId) {
+		if (updateTaskId != -1) {
+			Bukkit.getScheduler().cancelTask(updateTaskId);
+		}
+
+		updateTaskId = taskId;
 	}
 
 	public void debug(String i) {

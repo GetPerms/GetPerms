@@ -100,9 +100,7 @@ public class UpdateTask implements Runnable {
 				}
 
 				if (newestFile == null) {
-					sendWarning("No release files could be found! Trying again in one minute.");
-
-					sendWarning("Unable to check for updates. Trying again in one minute.");
+					sendWarning("No release files could be found! Trying again in one hour.");
 
 					scheduleUpdateTask();
 					return;
@@ -217,9 +215,10 @@ public class UpdateTask implements Runnable {
 			if (!matcher.find()) {
 				plugin.printStackTrace(e);
 			} else {
-				sendWarning("Unable to check for updates. Trying again in one minute.");
+				sendWarning("Unable to check for updates. Trying again in one hour.");
 
 				scheduleUpdateTask();
+				return;
 			}
 		} catch (AccessControlException e) {
 			plugin.printStackTrace(e);
@@ -243,7 +242,8 @@ public class UpdateTask implements Runnable {
 	}
 
 	private void scheduleUpdateTask() {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new UpdateTask(plugin), 60 * 20L);
+		plugin.registerUpdateTask(
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new UpdateTask(plugin), 60 * 60 * 20L));
 	}
 
 	private void sendInfo(String message) {
@@ -312,8 +312,8 @@ public class UpdateTask implements Runnable {
 
 	private String convertByteArrayToHexString(byte[] arrayBytes) {
 		StringBuffer stringBuffer = new StringBuffer();
-		for (int i = 0; i < arrayBytes.length; i++) {
-			stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16).substring(1));
+		for (byte arrayByte : arrayBytes) {
+			stringBuffer.append(Integer.toString((arrayByte & 0xff) + 0x100, 16).substring(1));
 		}
 		return stringBuffer.toString();
 	}

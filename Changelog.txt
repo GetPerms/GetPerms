@@ -1,6 +1,6 @@
 Changelog:
 
-v1.1.15 (In progress)
+v1.1.15 (12/10/15)
 Updates are no longer downloaded if it has already been downloaded and matches the checksum
 Update command now displays output to the running player
 Extra plugin-specific permissions now download from the plugin permission "database" when applicable
