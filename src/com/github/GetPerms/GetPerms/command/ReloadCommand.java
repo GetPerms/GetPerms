@@ -1,10 +1,10 @@
-package com.github.GetPerms.GetPerms.command;
+package com.github.getperms.getperms.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import com.github.GetPerms.GetPerms.Main;
-import com.github.GetPerms.GetPerms.UpdateTask;
+import com.github.getperms.getperms.Main;
+import com.github.getperms.getperms.UpdateTask;
 
 public class ReloadCommand extends AbstractCommand {
 

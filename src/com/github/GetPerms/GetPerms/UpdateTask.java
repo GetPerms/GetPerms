@@ -318,34 +318,22 @@ public class UpdateTask implements Runnable {
 		return stringBuffer.toString();
 	}
 
-	private final boolean newer(String current, String check) {
-		boolean result = false;
-		String[] currentVersion = current.split("\\.");
-		String[] checkVersion = check.split("\\.");
-		int i = Integer.parseInt(currentVersion[0]);
-		int j = Integer.parseInt(checkVersion[0]);
-		if (i > j) {
-			result = false;
-		} else if (i == j) {
-			i = Integer.parseInt(currentVersion[1]);
-			j = Integer.parseInt(checkVersion[1]);
-			if (i > j) {
-				result = false;
-			} else if (i == j) {
-				i = Integer.parseInt(currentVersion[2]);
-				j = Integer.parseInt(checkVersion[2]);
-				if (i >= j) {
-					result = false;
-				} else {
-					result = true;
-				}
-			} else {
-				result = true;
+	private final boolean newer(String currentVersion, String checkVersion) {
+		String[] currentParts = currentVersion.split("\\.");
+		String[] checkParts = checkVersion.split("\\.");
+
+		for (int i = 0; i < Math.min(currentParts.length, checkParts.length); i++) {
+			int current = Integer.parseInt(currentParts[i]);
+			int check = Integer.parseInt(checkParts[i]);
+			if (current < check) {
+				return true;
 			}
-		} else {
-			result = true;
 		}
-		return result;
+		if (currentParts.length < checkParts.length) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private String getAuthors() {
