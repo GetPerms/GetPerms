@@ -1,0 +1,54 @@
+#GetPerms config file.
+
+#Config version. Don't change it! Changing may cause undesirable results!
+cfgV_info: "Config version. Don't change it! Changing may cause undesirable results!"
+cfgV: "1.1.15"
+
+#Is it the first run?
+#Don't change it! Sometimes, it stays true even though it's not the first startup. This is
+#normal. However, if you want to see one-time messages, set it to true. This manages certain
+#messages and actions at startup.
+info_firstRun: "Is it the first run? Don't change it! Sometimes, it stays true even though it's not the first startup. This is normal. However, if you want to see one-time messages, set it to true. This manages certainmessages and actions at startup."
+firstRun: true
+
+#Should this plugin send usage stats to metrics.griefcraft.com every 15 minutes?
+info_sendStats: "Should this plugin send usage stats to metrics.griefcraft.com every 15 minutes?"
+sendStats: true
+
+#Display output on startup/shutdown/generation? Does not display error messages or
+#debug messages even if debug is enabled. Will still display 'GetPerms vX.X.X enabled!'
+info_silentMode: "false"
+silentMode: false
+
+#Weather or not to automatically generate the permissions files after every startup. Please note
+#that the files will only generate 5 seconds after this plugin loads.
+info_autoGenerate: "Whether or not to automatically generate the permissions files after every startup. Please note that the files will only generate 5 seconds after this plugin loads."
+autoGenerate: true
+
+#When true, if any plugin is removed, added, or updated, the permission files will be regenerated.
+#Has no effect if autoGenerate is enabled.
+info_regenerateOnPluginChange: "When true, if any plugin is removed, added, or updated, the permission files will be regenerated. Has no effect if autoGenerate is enabled."
+regenerateOnPluginChange: true
+
+#Weather or not to check for updates. If autoDownload is disabled, you will still get a message
+#about available updates in the server console.
+info_autoUpdate: "Whether or not to check for updates. If autoDownload is disabled, you will still get a message about available updates in the server console."
+autoUpdate: true
+
+#Should GetPerms updates be downloaded? Has no effect unless autoUpdate is enabled.
+info_autoDownload: "Should GetPerms updates be downloaded? Has no effect unless autoUpdate is enabled."
+autoDownload: true
+
+#Disable the plugin once it finishes?
+#When true, the commands to regenerate the permissions files will not work!
+info_disableOnFinish: "Disable the plugin once it finishes?"
+disableOnFinish: false
+
+#Download the latest dev build? May have bugs and errors.
+info_devBuilds: "Download the latest dev build? May have bugs and errors."
+devBuilds: false
+
+#Debug if needed for errors/bugs/info. Please enable it if anything seems to go wrong, or if
+#you suspect something is happening that shouldn't be.
+info_debugMode: "Debug if needed for errors/bugs/info. Please enable it if anything seems to go wrong, or if you suspect something is happening that shouldn't be."
+debugMode: false
